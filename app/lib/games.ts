@@ -184,6 +184,15 @@ const allGames: Game[] = [
     needs: 'webcam',
   },
   {
+    slug: 'swinging',
+    name: 'Ninja Swing',
+    tagline: 'Hook overhead pegs, swing and fly high',
+    description:
+      'A rope swinging physics game. Tap and hold to grapple overhead pegs, swing through the air, release to fly forward, and collect stars above the spikes.',
+    addedAt: '2026-11-24',
+    controls: 'hold',
+  },
+  {
     slug: 'boxline',
     name: 'Boxline',
     tagline: 'A 20-level line-drawing puzzle',

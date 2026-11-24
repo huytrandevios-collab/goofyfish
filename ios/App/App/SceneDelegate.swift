@@ -8,8 +8,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = CAPBridgeViewController()
+        let bridgeVC = CAPBridgeViewController()
+        window?.rootViewController = bridgeVC
         window?.makeKeyAndVisible()
+
+        // Disable zooming on webView scrollView
+        DispatchQueue.main.async {
+            bridgeVC.webView?.scrollView.maximumZoomScale = 1.0
+            bridgeVC.webView?.scrollView.minimumZoomScale = 1.0
+            bridgeVC.webView?.scrollView.bouncesZoom = false
+        }
 
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)
     }

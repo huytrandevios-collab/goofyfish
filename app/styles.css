@@ -45,6 +45,10 @@ body {
   color: var(--color-ink);
   background-color: #f7f7f5;
   min-height: 100%;
+  touch-action: pan-y manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 html {

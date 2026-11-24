@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Ninja Swing</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #ffffff;
+    --card: #ffffff;
+    --ink: #1f2329;
+    --muted: #7a7a7a;
+    --soft: #a3a3a3;
+    --faint: #d4d4d4;
+    --line: #ededed;
+    --dot: rgba(31, 41, 55, .13);
+    --chip: #f5f5f5;
+    --ring: rgba(0, 0, 0, .06);
+    --butter: #fde68a;
+    --butter-hi: #fcd34d;
+    --butter-soft: #fef3c7;
+    --umber: #78350f;
+    --amber: #b45309;
+    --font: 'Balsamiq Sans', 'Comic Sans MS', ui-rounded, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; color: var(--ink); overflow: hidden;
+    background-color: var(--paper);
+    background-image: radial-gradient(circle, var(--dot) 0.8px, transparent 1px);
+    background-size: 24px 24px; background-position: 12px 12px;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+    font-family: var(--font); font-weight: 400;
+  }
+  h1, b, strong { font-weight: 400; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; outline: none; padding: 0; }
+  .panel { background: var(--card); border-radius: 14px; box-shadow: 0 0 0 1px var(--ring), 0 2px 8px rgba(0, 0, 0, .04), 0 1px 2px rgba(0, 0, 0, .03); }
+  .label { font-size: 13px; color: var(--muted); line-height: 1.2; }
+
+  #hud {
+    position: fixed; left: 0; top: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 20px) 0 0 max(20px, env(safe-area-inset-left, 0px));
+    pointer-events: none; transition: opacity .35s ease;
+  }
+  #hud.hidden { opacity: 0; }
+  .board { padding: 14px 18px; }
+  .stats { display: flex; align-items: flex-end; gap: 28px; }
+  .stat .label { margin-top: 6px; }
+  #score { font-size: 44px; line-height: .85; font-variant-numeric: tabular-nums; display: inline-block; transform-origin: left bottom; }
+  #score.bump { animation: bump .35s ease; }
+  @keyframes bump { 0% { transform: scale(1); } 35% { transform: scale(1.12); } 100% { transform: scale(1); } }
+  #best { font-size: 22px; line-height: 1; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+  #overlay {
+    position: fixed; inset: 0; display: grid; place-items: center; padding: 20px; z-index: 4;
+    background: rgba(255, 255, 255, .7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    opacity: 0; pointer-events: none; transition: opacity .3s ease; overflow-y: auto;
+  }
+  #overlay.on { opacity: 1; pointer-events: auto; }
+  .card {
+    width: min(360px, 100%); background: var(--card); border-radius: 18px; padding: 28px;
+    transform: translateY(12px); transition: transform .35s cubic-bezier(.2, .9, .3, 1); display: none;
+  }
+  #overlay.on .card.show { transform: none; }
+  .card.show { display: block; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .logo { width: 46px; height: 46px; border-radius: 12px; background: #1f2329; display: grid; place-items: center; margin-bottom: 20px; }
+  .logo svg { width: 26px; height: 26px; }
+  .title { font-size: 32px; line-height: 1; margin: 0; }
+  .keys { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--muted); font-size: 15px; margin: 18px 0 10px; }
+  .tag { color: var(--muted); font-size: 15px; line-height: 1.5; margin: 0 0 26px; }
+  .chip { display: inline-flex; align-items: center; font-size: 13px; padding: 3px 9px; border-radius: 7px; background: var(--butter); color: var(--umber); white-space: nowrap; }
+  .actions { display: flex; gap: 10px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 10px; height: 50px; border-radius: 12px; font-size: 17px; transition: transform .12s, background .2s; }
+  .btn:active { transform: scale(.98); }
+  .btn.primary { flex: 1; background: var(--butter); color: var(--umber); box-shadow: 0 0 0 1px rgba(180, 83, 9, .2), 0 2px 8px rgba(0, 0, 0, .04); }
+  .btn.primary kbd { background: rgba(255, 255, 255, .55); color: #92400e; box-shadow: none; }
+  .btn.ghost { width: 50px; flex: none; background: var(--chip); box-shadow: 0 0 0 1px rgba(0, 0, 0, .05); }
+  @media (hover: hover) {
+    .btn.primary:hover { background: var(--butter-hi); }
+    .btn.ghost:hover { background: #ececec; }
+  }
+  .btn svg { width: 19px; height: 19px; }
+  .foot { text-align: center; color: var(--soft); font-size: 13px; line-height: 1.5; margin-top: 22px; }
+  .result { display: flex; align-items: flex-end; gap: 36px; margin: 22px 0 12px; }
+  .result .label { margin-top: 8px; }
+  .sub { display: flex; gap: 22px; color: var(--muted); font-size: 14px; margin: 0 0 26px; }
+  .sub b { color: var(--ink); font-size: 18px; font-variant-numeric: tabular-nums; }
+  #endScore { font-size: 72px; line-height: .8; font-variant-numeric: tabular-nums; display: block; }
+  #endBest { font-size: 32px; line-height: .9; font-variant-numeric: tabular-nums; }
+  #toast {
+    position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); transform: translate(-50%, 20px);
+    background: #1f2329; color: #fff; font-size: 14px; padding: 10px 16px; border-radius: 10px;
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; white-space: nowrap; z-index: 5;
+  }
+  #toast.on { opacity: 1; transform: translate(-50%, 0); }
+  .back { display: none !important; }
+
+  /* Comic Hand-Drawn Doodle Style matching Balsamiq Sans */
+  .card, .panel {
+    border: 2.5px solid #1f2329 !important;
+    border-radius: 22px 25px 21px 26px / 25px 22px 26px 21px !important;
+    box-shadow: 4px 5px 0px #1f2329, 0 12px 30px rgba(0, 0, 0, 0.1) !important;
+  }
+  .btn, .pb {
+    border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px !important;
+    transition: transform .12s, background .2s, box-shadow .12s !important;
+  }
+  .btn.primary, .pb.run {
+    border: 2px solid #78350f !important;
+    box-shadow: 2.5px 3px 0px #78350f !important;
+  }
+  .btn.primary:active, .pb.run:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 1px 1px 0px #78350f !important;
+  }
+  .btn.ghost, .pb:not(.run) {
+    border: 2px solid #1f2329 !important;
+    box-shadow: 2.5px 3px 0px #1f2329 !important;
+  }
+  .btn.ghost:active, .pb:not(.run):active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 1px 1px 0px #1f2329 !important;
+  }
+  .exit {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin: 18px auto 0 !important;
+    padding: 8px 22px !important;
+    background: #1c1917 !important;
+    color: #ffffff !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    border-radius: 9999px !important;
+    border: 2px solid #1c1917 !important;
+    box-shadow: 2.5px 3px 0px rgba(0, 0, 0, 0.4) !important;
+    cursor: pointer !important;
+    transition: transform 0.12s ease, opacity 0.12s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
+    width: fit-content !important;
+  }
+  .exit:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.4) !important;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="board panel">
+    <div class="stats">
+      <div class="stat"><div id="score">0</div><div class="label">Score</div></div>
+      <div class="stat"><div id="best">0</div><div class="label">Best</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay" class="on">
+  <div class="card show" id="startCard">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="3" fill="#fff"/>
+        <path d="M12 8v7m-3 7 3-7 3 7M7 11l5-1 5-2"/>
+        <circle cx="19" cy="3" r="2" fill="#fde68a" stroke="#f59e0b"/>
+      </svg>
+    </div>
+    <h1 class="title">Ninja Swing</h1>
+    <div class="keys"><kbd>Hold</kbd> to grapple & swing, <kbd>Release</kbd> to fly</div>
+    <p class="tag">Hook overhead pegs, swing through the air, and collect golden stars!</p>
+    <div class="actions">
+      <button class="btn primary" id="playBtn"><span>Play</span></button>
+    </div>
+    <div class="foot" id="startFoot"></div>
+    <a class="exit" href="javascript:void(0)" onclick="if(window.parent&&window.parent.closeGame){window.parent.closeGame();}else{window.top.location.href='/';}return false;">
+      <svg style="width:13px;height:13px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <span>Trang chủ</span>
+    </a>
+  </div>
+  
+  <div class="card" id="endCard">
+    <div class="row">
+      <div class="label" id="endWhy">Round over</div>
+      <span class="chip" id="endChip" style="display:none">New best</span>
+    </div>
+    <div class="result">
+      <div><span id="endScore">0</span><div class="label">Score</div></div>
+      <div><div id="endBest">0</div><div class="label">Best</div></div>
+    </div>
+    <div class="sub">
+      <span><b id="endDist">0</b> m</span>
+      <span><b id="endStars">0</b> stars</span>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="againBtn"><span>Play again</span></button>
+      <button class="btn ghost" id="shareBtn" aria-label="Download image" title="Download image">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>
+        </svg>
+      </button>
+    </div>
+    <div class="foot" id="endFoot"></div>
+    <a class="exit" href="javascript:void(0)" onclick="if(window.parent&&window.parent.closeGame){window.parent.closeGame();}else{window.top.location.href='/';}return false;">
+      <svg style="width:13px;height:13px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <span>Trang chủ</span>
+    </a>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SLUG = 'swinging';
+const GAME = 'Ninja Swing';
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+
+let W = window.innerWidth;
+let H = window.innerHeight;
+let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = W * dpr;
+  cv.height = H * dpr;
+  ctx.resetTransform?.();
+  ctx.scale(dpr, dpr);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// Audio context
+let actx = null;
+function playSound(type) {
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime;
+    const osc = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.connect(gain);
+    gain.connect(actx.destination);
+
+    if (type === 'hook') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(450, t);
+      osc.frequency.exponentialRampToValueAtTime(150, t + 0.12);
+      gain.gain.setValueAtTime(0.2, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.12);
+      osc.start(t);
+      osc.stop(t + 0.13);
+    } else if (type === 'star') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(587.33, t); // D5
+      osc.frequency.setValueAtTime(880, t + 0.08); // A5
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.25);
+      osc.start(t);
+      osc.stop(t + 0.26);
+    } else if (type === 'hit') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(120, t);
+      osc.frequency.linearRampToValueAtTime(40, t + 0.25);
+      gain.gain.setValueAtTime(0.3, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.25);
+      osc.start(t);
+      osc.stop(t + 0.26);
+    }
+  } catch(e) {}
+}
+
+// Game State
+let isPlaying = false;
+let score = 0;
+let best = parseInt(localStorage.getItem('stickerman_swinging_best') || '0', 10);
+let starsCollected = 0;
+let distance = 0;
+let isHolding = false;
+
+// Stickman Hero Physics
+const player = {
+  x: 100,
+  y: 300,
+  vx: 240,
+  vy: 0,
+  radius: 12,
+  hookedPeg: null,
+  ropeLength: 0,
+  angle: 0,
+  angleVel: 0,
+  poseTimer: 0
+};
+
+let pegs = [];
+let stars = [];
+let particles = [];
+let camX = 0;
+
+function resetGame() {
+  score = 0;
+  starsCollected = 0;
+  distance = 0;
+  isHolding = false;
+
+  player.x = 100;
+  player.y = H * 0.45;
+  player.vx = 220;
+  player.vy = 0;
+  player.hookedPeg = null;
+  player.ropeLength = 0;
+  player.angle = 0;
+  player.angleVel = 0;
+
+  camX = player.x - 120;
+  pegs = [];
+  stars = [];
+  particles = [];
+
+  // Generate initial pegs
+  for (let i = 0; i < 12; i++) {
+    addPeg(200 + i * 190);
+  }
+
+  document.getElementById('score').textContent = '0';
+  document.getElementById('best').textContent = best;
+  document.getElementById('hud').classList.remove('hidden');
+}
+
+function addPeg(x) {
+  const y = H * 0.22 + (Math.sin(x * 0.005) * 40);
+  pegs.push({ x, y, active: false });
+
+  // Add stars between pegs
+  if (Math.random() > 0.3) {
+    stars.push({
+      x: x + 95,
+      y: y + 90 + Math.random() * 60,
+      collected: false,
+      rot: 0
+    });
+  }
+}
+
+function findNearestPeg() {
+  let nearest = null;
+  let minDist = Infinity;
+  for (let peg of pegs) {
+    // Only peg in front or directly above
+    if (peg.x > player.x - 40 && peg.x < player.x + 280 && peg.y < player.y) {
+      let dx = peg.x - player.x;
+      let dy = peg.y - player.y;
+      let dist = Math.hypot(dx, dy);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = peg;
+      }
+    }
+  }
+  return nearest;
+}
+
+function attachHook() {
+  const peg = findNearestPeg();
+  if (peg) {
+    player.hookedPeg = peg;
+    let dx = player.x - peg.x;
+    let dy = player.y - peg.y;
+    player.ropeLength = Math.hypot(dx, dy);
+    player.angle = Math.atan2(dy, dx);
+
+    // Tangential velocity -> angular velocity
+    let tangentX = -Math.sin(player.angle);
+    let tangentY = Math.cos(player.angle);
+    let vTan = player.vx * tangentX + player.vy * tangentY;
+    player.angleVel = vTan / Math.max(player.ropeLength, 30);
+
+    playSound('hook');
+
+    // Spawn hook sparks
+    for (let i = 0; i < 6; i++) {
+      particles.push({
+        x: peg.x, y: peg.y,
+        vx: (Math.random() - 0.5) * 120,
+        vy: (Math.random() - 0.5) * 120,
+        life: 0.35, maxLife: 0.35,
+        col: '#f59e0b', size: 3
+      });
+    }
+  }
+}
+
+function releaseHook() {
+  if (player.hookedPeg) {
+    let tangentX = -Math.sin(player.angle);
+    let tangentY = Math.cos(player.angle);
+    let vTan = player.angleVel * player.ropeLength;
+
+    player.vx = tangentX * vTan;
+    player.vy = tangentY * vTan;
+
+    // Minimum forward boost when releasing cleanly
+    if (player.vx < 120) player.vx = 180;
+
+    player.hookedPeg = null;
+  }
+}
+
+function die() {
+  if (!isPlaying) return;
+  isPlaying = false;
+  playSound('hit');
+
+  // Spawn defeat dust
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      x: player.x, y: player.y,
+      vx: (Math.random() - 0.5) * 200,
+      vy: (Math.random() - 0.5) * 200,
+      life: 0.6, maxLife: 0.6,
+      col: '#1f2329', size: 4
+    });
+  }
+
+  const isBest = score > best;
+  if (isBest) {
+    best = score;
+    localStorage.setItem('stickerman_swinging_best', best);
+  }
+
+  setTimeout(() => {
+    document.getElementById('endWhy').textContent = 'Fell off the swing';
+    document.getElementById('endScore').textContent = score;
+    document.getElementById('endBest').textContent = best;
+    document.getElementById('endDist').textContent = Math.floor(distance);
+    document.getElementById('endStars').textContent = starsCollected;
+    document.getElementById('endChip').style.display = isBest ? 'inline-flex' : 'none';
+
+    document.getElementById('startCard').classList.remove('show');
+    document.getElementById('endCard').classList.add('show');
+    document.getElementById('overlay').classList.add('on');
+    document.getElementById('hud').classList.add('hidden');
+  }, 400);
+}
+
+// Input Handlers
+function onTouchStart(e) {
+  if (e.target.closest('#overlay') || e.target.closest('button') || e.target.closest('a')) return;
+  e.preventDefault();
+  if (!isPlaying) return;
+  isHolding = true;
+  attachHook();
+}
+
+function onTouchEnd(e) {
+  if (e.target.closest('#overlay') || e.target.closest('button') || e.target.closest('a')) return;
+  if (!isPlaying) return;
+  isHolding = false;
+  releaseHook();
+}
+
+window.addEventListener('mousedown', onTouchStart);
+window.addEventListener('mouseup', onTouchEnd);
+window.addEventListener('touchstart', onTouchStart, { passive: false });
+window.addEventListener('touchend', onTouchEnd, { passive: false });
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('on');
+  document.getElementById('startCard').classList.remove('show');
+  isPlaying = true;
+  resetGame();
+});
+
+document.getElementById('againBtn').addEventListener('click', () => {
+  document.getElementById('overlay').classList.remove('on');
+  document.getElementById('endCard').classList.remove('show');
+  isPlaying = true;
+  resetGame();
+});
+
+// Update loop
+const GRAVITY = 750;
+let lastTime = performance.now();
+
+function update(dt) {
+  if (!isPlaying) return;
+
+  if (player.hookedPeg) {
+    // Pendulum physics
+    const peg = player.hookedPeg;
+    // Angular acceleration = - (g / L) * cos(theta - pi/2) = - (g / L) * sin(theta) ... where theta from vertical
+    // Here angle is standard screen atan2: 0 is right, PI/2 is down
+    const gTangent = - (GRAVITY / Math.max(player.ropeLength, 40)) * Math.cos(player.angle);
+    player.angleVel += gTangent * dt;
+    player.angleVel *= 0.994; // slight drag
+    player.angle += player.angleVel * dt;
+
+    player.x = peg.x + Math.cos(player.angle) * player.ropeLength;
+    player.y = peg.y + Math.sin(player.angle) * player.ropeLength;
+
+    player.vx = -Math.sin(player.angle) * player.angleVel * player.ropeLength;
+    player.vy = Math.cos(player.angle) * player.angleVel * player.ropeLength;
+  } else {
+    // Free flight
+    player.vy += GRAVITY * dt;
+    player.vx *= 0.998;
+    player.x += player.vx * dt;
+    player.y += player.vy * dt;
+  }
+
+  // Camera smooth follow
+  camX += (player.x - 140 - camX) * 0.1;
+
+  // Track distance & score
+  distance = Math.max(distance, (player.x - 100) / 10);
+  score = Math.floor(distance) + starsCollected * 10;
+  document.getElementById('score').textContent = score;
+
+  // Generate more pegs ahead
+  const lastPeg = pegs[pegs.length - 1];
+  if (lastPeg && lastPeg.x < player.x + W + 300) {
+    addPeg(lastPeg.x + 180 + Math.random() * 40);
+  }
+
+  // Clean old pegs & stars
+  pegs = pegs.filter(p => p.x > camX - 100);
+  stars = stars.filter(s => s.x > camX - 100 && !s.collected);
+
+  // Check Star collisions
+  for (let s of stars) {
+    if (!s.collected && Math.hypot(s.x - player.x, s.y - player.y) < player.radius + 18) {
+      s.collected = true;
+      starsCollected++;
+      playSound('star');
+      for (let i = 0; i < 8; i++) {
+        particles.push({
+          x: s.x, y: s.y,
+          vx: (Math.random() - 0.5) * 160,
+          vy: (Math.random() - 0.5) * 160,
+          life: 0.45, maxLife: 0.45,
+          col: '#f59e0b', size: 3.5
+        });
+      }
+    }
+  }
+
+  // Particles
+  for (let p of particles) {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.life -= dt;
+  }
+  particles = particles.filter(p => p.life > 0);
+
+  // Floor hazard death check
+  if (player.y > H - 35) {
+    die();
+  }
+}
+
+// Render
+function render() {
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.save();
+  ctx.translate(-camX, 0);
+
+  // Draw Bottom Spike Hazard Danger Zone
+  ctx.fillStyle = '#ef4444';
+  ctx.strokeStyle = '#1f2329';
+  ctx.lineWidth = 2.5;
+  const spikeWidth = 20;
+  const startSpikeX = Math.floor(camX / spikeWidth) * spikeWidth - spikeWidth;
+  const endSpikeX = startSpikeX + W + spikeWidth * 2;
+
+  ctx.beginPath();
+  for (let x = startSpikeX; x < endSpikeX; x += spikeWidth) {
+    ctx.moveTo(x, H);
+    ctx.lineTo(x + spikeWidth / 2, H - 24);
+    ctx.lineTo(x + spikeWidth, H);
+  }
+  ctx.fill();
+  ctx.stroke();
+
+  // Draw Pegs (Grapple Anchors)
+  for (let peg of pegs) {
+    ctx.fillStyle = '#1f2329';
+    ctx.beginPath();
+    ctx.arc(peg.x, peg.y, 9, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fde68a';
+    ctx.beginPath();
+    ctx.arc(peg.x, peg.y, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Draw Target Peg Highlight
+  if (isPlaying && !player.hookedPeg) {
+    const target = findNearestPeg();
+    if (target) {
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, 16, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+
+  // Draw Stars
+  for (let s of stars) {
+    if (s.collected) continue;
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.fillStyle = '#f59e0b';
+    ctx.strokeStyle = '#1f2329';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      ctx.lineTo(Math.cos((18 + i * 72) * 0.01745) * 13, -Math.sin((18 + i * 72) * 0.01745) * 13);
+      ctx.lineTo(Math.cos((54 + i * 72) * 0.01745) * 6, -Math.sin((54 + i * 72) * 0.01745) * 6);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Draw Rope
+  if (player.hookedPeg) {
+    ctx.strokeStyle = '#1f2329';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(player.hookedPeg.x, player.hookedPeg.y);
+    ctx.lineTo(player.x, player.y);
+    ctx.stroke();
+  }
+
+  // Draw Stickman Hero
+  ctx.save();
+  ctx.translate(player.x, player.y);
+  // Rotate slightly with velocity
+  const rot = Math.atan2(player.vy, player.vx) * 0.4;
+  ctx.rotate(rot);
+
+  ctx.strokeStyle = '#1f2329';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  // Head
+  ctx.beginPath();
+  ctx.arc(0, -14, 8, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+
+  // Ninja Headband
+  ctx.fillStyle = '#ef4444';
+  ctx.beginPath();
+  ctx.rect(-8, -17, 16, 4);
+  ctx.fill();
+  ctx.stroke();
+  // Headband tails flying in wind
+  ctx.beginPath();
+  ctx.moveTo(-7, -15);
+  ctx.quadraticCurveTo(-16, -18, -20, -12);
+  ctx.stroke();
+
+  // Torso
+  ctx.beginPath();
+  ctx.moveTo(0, -6);
+  ctx.lineTo(0, 14);
+  ctx.stroke();
+
+  // Arms
+  if (player.hookedPeg) {
+    // Reaching up
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.lineTo(6, -16);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.lineTo(-4, -14);
+    ctx.stroke();
+  } else {
+    // Aerodynamic flight
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.lineTo(12, 0);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.lineTo(-10, 6);
+    ctx.stroke();
+  }
+
+  // Legs
+  if (player.hookedPeg) {
+    ctx.beginPath();
+    ctx.moveTo(0, 14);
+    ctx.lineTo(8, 26);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 14);
+    ctx.lineTo(-4, 25);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(0, 14);
+    ctx.lineTo(-12, 22);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 14);
+    ctx.lineTo(-6, 26);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+
+  // Particles
+  for (let p of particles) {
+    ctx.fillStyle = p.col;
+    ctx.globalAlpha = p.life / p.maxLife;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+function loop(t) {
+  const dt = Math.min((t - lastTime) / 1000, 0.05);
+  lastTime = t;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// Scorecard generator
+function shareCanvas(res) {
+  const SW = 1080, SH = 1350;
+  const c = document.createElement('canvas');
+  c.width = SW;
+  c.height = SH;
+  const sctx = c.getContext('2d');
+  const font = (s) => `400 ${s}px 'Balsamiq Sans', system-ui, sans-serif`;
+
+  sctx.fillStyle = '#ffffff';
+  sctx.fillRect(0, 0, SW, SH);
+
+  // Background dots
+  sctx.fillStyle = 'rgba(31,41,55,0.13)';
+  for (let y = 18; y < SH; y += 36) {
+    for (let x = 18; x < SW; x += 36) {
+      sctx.beginPath();
+      sctx.arc(x, y, 1.6, 0, Math.PI * 2);
+      sctx.fill();
+    }
+  }
+
+  if (res.isBest) {
+    sctx.fillStyle = '#b45309';
+    sctx.font = font(30);
+    sctx.fillText('PERSONAL BEST', 82, 108);
+  }
+
+  sctx.fillStyle = '#1f2329';
+  sctx.font = font(250);
+  sctx.fillText(String(res.score), 70, 330);
+
+  sctx.fillStyle = '#7a7a7a';
+  sctx.font = font(30);
+  sctx.fillText('POINTS', 82, 386);
+
+  const stat = (v, label, x) => {
+    sctx.fillStyle = '#1f2329';
+    sctx.font = font(64);
+    sctx.fillText(String(v), x, 540);
+    sctx.fillStyle = '#7a7a7a';
+    sctx.font = font(21);
+    sctx.fillText(label, x + 2, 580);
+  };
+
+  stat(res.dist + ' m', 'DISTANCE', 82);
+  stat(res.stars, 'STARS', 420);
+  stat(res.best, 'BEST SCORE', 680);
+
+  sctx.fillStyle = '#d4d4d4';
+  sctx.font = font(26);
+  sctx.fillText(GAME.toUpperCase(), 84, 1290);
+
+  return c;
+}
+
+document.getElementById('shareBtn').addEventListener('click', async () => {
+  try {
+    const res = {
+      score,
+      best,
+      dist: Math.floor(distance),
+      stars: starsCollected,
+      isBest: score >= best && score > 0
+    };
+    const blob = await new Promise((r) => shareCanvas(res).toBlob(r, 'image/png'));
+    const url = URL.createObjectURL(blob);
+    if (window.parent && window.parent.openScorecard) {
+      window.parent.openScorecard(url, 'stickerman-score.png');
+    } else {
+      window.parent?.postMessage({ type: 'show-scorecard', url: url, filename: 'stickerman-score.png' }, '*');
+    }
+  } catch(e) {
+    console.error(e);
+  }
+});
+</script>
+
+<script>
+(function() {
+  function syncCardState() {
+    try {
+      var hasCard = !!(
+        document.querySelector('.card.show') ||
+        document.querySelector('#overlay.on') ||
+        document.querySelector('.modal.show') ||
+        document.querySelector('#startCard.show') ||
+        document.querySelector('#endCard.show')
+      );
+      if (window.parent && window.parent.setHomeButtonVisible) {
+        window.parent.setHomeButtonVisible(!hasCard);
+      }
+    } catch(e) {}
+  }
+  try {
+    var obs = new MutationObserver(syncCardState);
+    obs.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+    window.addEventListener('load', syncCardState);
+    setTimeout(syncCardState, 150);
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
