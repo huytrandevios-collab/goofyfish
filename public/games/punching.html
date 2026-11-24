@@ -5564,17 +5564,34 @@ async function share(res) {
       await document.fonts.ready;
     }
     const blob = await new Promise((r) => shareCanvas(res).toBlob(r, 'image/png'));
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `keep-punching-${res.kos}.png`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    toast('Image saved');
+    const file = new File([blob], `keep-punching-${res.kos}.png`, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Sticker Man - Goon Rush',
+        text: `Tôi vừa đạt ${res.kos} Knockouts trong Sticker Man!`
+      });
+      toast('Đã chia sẻ');
+      return;
+    }
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (!isIOS) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `keep-punching-${res.kos}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      toast('Image saved');
+    } else {
+      toast('Kỷ lục: ' + res.kos + ' KOs');
+    }
   } catch (e) {
-    toast('Could not save the image');
+    if (e.name !== 'AbortError') {
+      toast('Could not save the image');
+    }
   } finally {
     clearTimeout(later);
     btn.classList.remove('busy');

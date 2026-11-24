@@ -90,50 +90,119 @@ const jsonLd = {
   </main>
 
   <!-- Full-screen In-App Game Player for Mobile -->
-  <div id='game-modal' class='fixed inset-0 z-50 hidden bg-white'>
+  <div id='game-modal' class='fixed inset-0 z-50 hidden bg-white' style='position: fixed; inset: 0; z-index: 9999;'>
     <iframe
       id='modal-game-frame'
       title='Game View'
       allow='camera; microphone; fullscreen; autoplay; web-share; clipboard-write'
       class='w-full h-full border-0 block bg-white'
     ></iframe>
+
+    <!-- Nút Về Trang Chủ đặt SAU iframe để luôn nằm trên cùng (z-index 99999) -->
+    <button
+      id='modal-close-btn'
+      type='button'
+      aria-label='Về trang chủ'
+      onclick='window.closeGame ? window.closeGame() : document.getElementById("game-modal").classList.add("hidden")'
+      style='position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); right: 16px; z-index: 99999; pointer-events: auto;'
+      class='flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-900/90 active:scale-90 text-white text-[12.5px] font-semibold shadow-2xl backdrop-blur-md border border-white/30 cursor-pointer select-none'
+    >
+      <svg class='w-3.5 h-3.5' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M18 6 6 18M6 6l12 12'/>
+      </svg>
+      <span>Trang chủ</span>
+    </button>
   </div>
 
   <script is:inline>
     {
       const modal = document.getElementById('game-modal');
       const frame = document.getElementById('modal-game-frame');
-
-      function openGame(slug) {
-        if (!modal || !frame) return;
-        frame.src = `/games/${slug}.html`;
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        
-        // Listen for when game finishes loading
-        frame.addEventListener(
-          'load',
-          () => {
-            frame.contentWindow?.focus();
-            try {
-              // Intercept the game's native "← all games" link to close modal smoothly with zero latency
-              frame.contentDocument?.querySelectorAll('a[href="/"]').forEach((link) => {
-                link.addEventListener('click', (ev) => {
-                  ev.preventDefault();
-                  closeGame();
-                });
-              });
-            } catch (err) {}
-          },
-          { once: true }
-        );
-      }
+      const closeBtn = document.getElementById('modal-close-btn');
 
       function closeGame() {
         if (!modal || !frame) return;
         frame.src = 'about:blank';
         modal.classList.add('hidden');
         document.body.style.overflow = '';
+      }
+
+      window.closeGame = closeGame;
+      if (closeBtn) {
+        closeBtn.onclick = (e) => {
+          e.preventDefault();
+          closeGame();
+        };
+      }
+
+      async function handleBlobShare(blobUrl, filename) {
+        try {
+          const resp = await fetch(blobUrl);
+          const blob = await resp.blob();
+          const file = new File([blob], filename, { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Sticker Man Score',
+              text: 'Kỷ lục Sticker Man của tôi!'
+            });
+            return;
+          }
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      function setupIframe() {
+        try {
+          const win = frame.contentWindow;
+          const doc = frame.contentDocument || win?.document;
+          if (!win || !doc) return;
+
+          win.focus();
+
+          // Intercept native exit/all games links inside the game
+          doc.addEventListener('click', (ev) => {
+            const a = ev.target.closest('a');
+            if (a) {
+              const href = a.getAttribute('href');
+              if (href === '/' || href === '/all' || href === 'index.html' || a.classList.contains('back') || a.classList.contains('exit')) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                closeGame();
+                return;
+              }
+              // Prevent navigation to raw blob image URLs
+              if (a.href && (a.href.startsWith('blob:') || a.download)) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                handleBlobShare(a.href, a.download || 'stickerman.png');
+                return;
+              }
+            }
+          }, true);
+
+          // Prevent programmatic a.click() on blob from navigating the webview
+          const origClick = win.HTMLAnchorElement.prototype.click;
+          win.HTMLAnchorElement.prototype.click = function() {
+            if (this.href && (this.href.startsWith('blob:') || this.download)) {
+              handleBlobShare(this.href, this.download || 'stickerman.png');
+              return;
+            }
+            return origClick.apply(this, arguments);
+          };
+        } catch (err) {
+          console.warn('Iframe setup error', err);
+        }
+      }
+
+      function openGame(slug) {
+        if (!modal || !frame) return;
+        frame.src = `/games/${slug}.html`;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        frame.onload = setupIframe;
       }
 
       // Also listen for popstate or messages
