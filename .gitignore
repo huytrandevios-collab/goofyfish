@@ -7,3 +7,5 @@
 /build/
 
 /tmp/
+ios/App/build_device/
+ios/App/build_sim/
