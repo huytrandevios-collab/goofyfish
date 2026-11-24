@@ -90,7 +90,7 @@ const jsonLd = {
   </main>
 
   <!-- Full-screen In-App Game Player for Mobile -->
-  <div id='game-modal' class='fixed inset-0 z-50 hidden bg-white' style='position: fixed; inset: 0; z-index: 9999;'>
+  <div id='game-modal' class='fixed inset-0 z-50 hidden bg-white' style='position: fixed; inset: 0; z-index: 9999; display: none;'>
     <iframe
       id='modal-game-frame'
       title='Game View'
@@ -103,7 +103,7 @@ const jsonLd = {
       id='modal-close-btn'
       type='button'
       aria-label='Về trang chủ'
-      onclick='window.closeGame ? window.closeGame() : document.getElementById("game-modal").classList.add("hidden")'
+      onclick='window.closeGame ? window.closeGame() : (document.getElementById("game-modal").style.display = "none")'
       style='position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); right: 16px; z-index: 99999; pointer-events: auto;'
       class='flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-900/90 active:scale-90 text-white text-[12.5px] font-semibold shadow-2xl backdrop-blur-md border border-white/30 cursor-pointer select-none'
     >
@@ -114,44 +114,59 @@ const jsonLd = {
     </button>
   </div>
 
-  <!-- Scorecard Preview Modal: Hiển thị ảnh kết quả vừa vặn 100% màn hình điện thoại, không bao giờ bị phóng to quá cỡ -->
+  <!-- Scorecard Preview Modal: Hiển thị Báo Cáo Kết Quả & Tranh Minh Họa chuẩn tỉ lệ di động -->
   <div
     id='scorecard-modal'
-    class='fixed inset-0 z-[100000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity select-none'
-    style='display: none;'
+    class='fixed inset-0 z-[100000] hidden items-center justify-center p-3 bg-black/85 backdrop-blur-md transition-opacity select-none'
+    style='display: none; position: fixed; inset: 0; z-index: 100000;'
   >
     <div class='relative max-w-sm w-full flex flex-col items-center animate-in fade-in zoom-in-95 duration-200'>
-      <div class='text-center mb-3 text-white'>
-        <p class='text-[16px] font-bold text-amber-300'>Thẻ Kết Quả Của Bạn</p>
-        <p class='text-[12px] text-stone-300'>Ảnh được tối ưu vừa vặn cho thiết bị</p>
+      <!-- Header -->
+      <div class='flex items-center justify-between w-full px-2 mb-2 text-white'>
+        <div class='flex items-center gap-2'>
+          <span class='text-lg'>🏆</span>
+          <div>
+            <h3 class='text-[15px] font-bold text-amber-300 leading-tight'>Báo Cáo Thành Tích</h3>
+            <p class='text-[11px] text-stone-300 leading-tight'>Tranh minh họa ván đấu của bạn</p>
+          </div>
+        </div>
+        <button
+          id='scorecard-top-close-btn'
+          type='button'
+          class='w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white text-base active:scale-90 cursor-pointer transition-transform'
+        >
+          ✕
+        </button>
       </div>
 
-      <!-- Ảnh kết quả co giãn tự động không tràn màn hình -->
-      <img
-        id='scorecard-img'
-        alt='Thẻ Điểm Sticker Man'
-        class='w-auto max-h-[60vh] max-w-[85vw] object-contain rounded-2xl shadow-2xl border border-white/20 bg-white'
-      />
+      <!-- Ảnh kết quả minh họa hiển thị trọn vẹn, co giãn theo chiều cao điện thoại -->
+      <div class='relative flex items-center justify-center w-full max-h-[66vh] overflow-hidden rounded-2xl bg-[#f7f7f5] shadow-2xl border-2 border-amber-300/60'>
+        <img
+          id='scorecard-img'
+          alt='Báo Cáo Minh Họa Sticker Man'
+          class='w-auto max-h-[66vh] max-w-[88vw] object-contain block'
+        />
+      </div>
 
-      <!-- Nút thao tác trực quan -->
-      <div class='mt-4 flex w-full max-w-[85vw] gap-3'>
+      <!-- Nút thao tác Lưu ảnh / Đóng -->
+      <div class='mt-3 flex w-full max-w-[88vw] gap-2.5'>
         <button
           id='scorecard-share-btn'
           type='button'
-          class='flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-stone-900 font-bold text-[14.5px] shadow-lg transition-transform cursor-pointer'
+          class='flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-stone-900 font-bold text-[14px] shadow-lg transition-transform cursor-pointer'
         >
           <svg class='w-4.5 h-4.5' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>
             <path d='M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8'/>
             <polyline points='16 6 12 2 8 6'/>
             <line x1='12' y1='2' x2='12' y2='15'/>
           </svg>
-          <span>Lưu / Chia sẻ</span>
+          <span>Lưu ảnh / Chia sẻ</span>
         </button>
 
         <button
           id='scorecard-close-btn'
           type='button'
-          class='flex items-center justify-center gap-1.5 py-3 px-5 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 text-white font-semibold text-[14.5px] backdrop-blur-sm transition-transform cursor-pointer border border-white/20'
+          class='flex items-center justify-center px-4 py-3 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 text-white font-semibold text-[14px] backdrop-blur-sm transition-transform cursor-pointer border border-white/20'
         >
           <span>Đóng</span>
         </button>
@@ -169,6 +184,7 @@ const jsonLd = {
       const scorecardImg = document.getElementById('scorecard-img');
       const scorecardShareBtn = document.getElementById('scorecard-share-btn');
       const scorecardCloseBtn = document.getElementById('scorecard-close-btn');
+      const scorecardTopCloseBtn = document.getElementById('scorecard-top-close-btn');
 
       let currentBlobUrl = null;
       let currentFile = null;
@@ -176,6 +192,7 @@ const jsonLd = {
       function closeGame() {
         if (!modal || !frame) return;
         frame.src = 'about:blank';
+        modal.style.display = 'none';
         modal.classList.add('hidden');
         document.body.style.overflow = '';
         closeScorecard();
@@ -196,6 +213,8 @@ const jsonLd = {
           .catch(() => {});
       }
 
+      window.openScorecard = openScorecard;
+
       function closeScorecard() {
         if (!scorecardModal) return;
         scorecardModal.style.display = 'none';
@@ -203,6 +222,7 @@ const jsonLd = {
       }
 
       scorecardCloseBtn?.addEventListener('click', closeScorecard);
+      scorecardTopCloseBtn?.addEventListener('click', closeScorecard);
 
       scorecardShareBtn?.addEventListener('click', async () => {
         if (currentFile && navigator.canShare && navigator.canShare({ files: [currentFile] })) {
@@ -287,6 +307,7 @@ const jsonLd = {
       function openGame(slug) {
         if (!modal || !frame) return;
         frame.src = `/games/${slug}.html`;
+        modal.style.display = 'block';
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
@@ -296,6 +317,7 @@ const jsonLd = {
       // Also listen for popstate or messages
       window.addEventListener('message', (ev) => {
         if (ev.data === 'close-game') closeGame();
+        if (ev.data?.type === 'show-scorecard') openScorecard(ev.data.url, ev.data.filename);
       });
 
       document.querySelectorAll('[data-game-slug]').forEach((card) => {

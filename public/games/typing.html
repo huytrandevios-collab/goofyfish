@@ -2793,29 +2793,11 @@ async function share(res) {
   try {
     await document.fonts.ready;
     const blob = await new Promise((r) => shareCanvas(res).toBlob(r, 'image/png'));
-    const file = new File([blob], 'stickerman-score.png', { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: 'Sticker Man Arcade',
-        text: 'Kỷ lục Sticker Man của tôi!'
-      });
-      toast('Đã chia sẻ');
-      return;
-    }
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    if (!isIOS) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'stickerman-score.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      toast('Image saved');
+    const url = URL.createObjectURL(blob);
+    if (window.parent && window.parent.openScorecard) {
+      window.parent.openScorecard(url, 'stickerman-score.png');
     } else {
-      toast('Kỷ lục đã được lưu');
+      window.parent?.postMessage({ type: 'show-scorecard', url: url, filename: 'stickerman-score.png' }, '*');
     }
   } catch (e) {
     toast('Could not save the image');
