@@ -2,11 +2,13 @@
   "appId": "com.huytrandev.stickerman",
   "appName": "Sticker Man",
   "webDir": "build/client",
+  "backgroundColor": "#f7f7f5",
   "server": {
     "androidScheme": "https"
   },
   "ios": {
-    "contentInset": "always",
+    "backgroundColor": "#f7f7f5",
+    "contentInset": "automatic",
     "allowsLinkPreview": false,
     "scrollEnabled": true
   }

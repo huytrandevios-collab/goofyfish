@@ -18,11 +18,11 @@ const gaId = import.meta.env.VITE_GA_ID as string | undefined;
 ---
 
 <!doctype html>
-<html lang='en'>
+<html lang='en' class='bg-[#f7f7f5]'>
   <head>
     <meta charset='utf-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' />
-    <meta name='theme-color' content='#ffffff' />
+    <meta name='theme-color' content='#f7f7f5' />
     <title>{props.title}</title>
     <meta name='description' content={props.description} />
     {props.noindex ? <meta name='robots' content='noindex' /> : <link rel='canonical' href={url} />}
@@ -66,7 +66,7 @@ const gaId = import.meta.env.VITE_GA_ID as string | undefined;
       )
     }
   </head>
-  <body>
+  <body class='bg-[#f7f7f5] min-h-screen'>
     <slot />
   </body>
 </html>

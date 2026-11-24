@@ -20,7 +20,7 @@ const jsonLd = {
 ---
 
 <Base title={`${SITE.name} · ${SITE.tagline}`} description={SITE.description} path='/' jsonLd={jsonLd}>
-  <main class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] pb-[calc(env(safe-area-inset-bottom,0px)+1rem)] sm:px-8 sm:pt-16'>
+  <main class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] pb-[calc(env(safe-area-inset-bottom,0px)+0.25rem)] sm:px-8 sm:pt-16'>
     <section class='grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4'>
       <header
         class='col-span-2 flex flex-col justify-center rounded-2xl border border-amber-ink/20 bg-butter-soft p-4 sm:px-7 sm:py-6 shadow-xs'
@@ -46,11 +46,46 @@ const jsonLd = {
           </a>
         ))
       }
+
+      <!-- Thẻ Game Mới Sắp Ra Mắt lấp đầy ô trống thẩm mỹ -->
+      <div
+        class='group relative flex flex-col justify-between rounded-2xl border border-dashed border-amber-300/80 bg-amber-50/40 p-2 text-center transition-colors'
+      >
+        <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-white/80'>
+          <svg viewBox="0 0 100 100" class="h-16 w-16" fill="none" stroke="#1f2329" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Head -->
+            <circle cx="50" cy="28" r="9" stroke-width="3" fill="#fde68a" />
+            <!-- Face -->
+            <circle cx="47" cy="27" r="1.2" fill="#1f2329" stroke="none" />
+            <circle cx="53" cy="27" r="1.2" fill="#1f2329" stroke="none" />
+            <path d="M 47 31 Q 50 34 53 31" stroke-width="1.5" />
+            <!-- Body -->
+            <path d="M 50 37 L 50 60" stroke-width="3" />
+            <!-- Arms holding gamepad -->
+            <path d="M 50 45 L 39 50 L 44 54" stroke-width="2.5" />
+            <path d="M 50 45 L 61 50 L 56 54" stroke-width="2.5" />
+            <!-- Mini Controller -->
+            <rect x="42" y="51" width="16" height="8" rx="3" fill="#1f2329" stroke="#1f2329" stroke-width="2" />
+            <circle cx="46" cy="55" r="1" fill="#fcd34d" stroke="none" />
+            <circle cx="54" cy="55" r="1" fill="#ef4444" stroke="none" />
+            <!-- Legs sitting -->
+            <path d="M 50 60 L 37 74 L 45 76" stroke-width="3" />
+            <path d="M 50 60 L 63 74 L 55 76" stroke-width="3" />
+            <!-- Sparkles -->
+            <path d="M 28 22 L 30 18 L 32 22 L 36 24 L 32 26 L 30 30 L 28 26 L 24 24 Z" fill="#f59e0b" stroke="none" />
+            <path d="M 72 24 L 73 21 L 74 24 L 77 25 L 74 26 L 73 29 L 72 26 L 69 25 Z" fill="#f59e0b" stroke="none" />
+          </svg>
+        </div>
+        <div class='px-2 pt-2.5 pb-2'>
+          <h2 class='font-display text-[16px] leading-tight text-amber-950 sm:text-[17px]'>Sắp Ra Mắt...</h2>
+          <p class='mt-1 text-[12px] leading-snug text-amber-800/80'>Mini game mới đang phát triển!</p>
+        </div>
+      </div>
     </section>
 
-    <footer class='mt-6 pb-2 flex flex-col items-center gap-0.5 text-center'>
-      <p class='text-[13px] font-medium text-stone-600'>Copyright © Huy Tran</p>
-      <p class='text-[11.5px] text-stone-400'>Sticker Man Arcade · All rights reserved</p>
+    <footer class='mt-3 pb-1 flex flex-col items-center text-center'>
+      <p class='text-[12px] font-medium leading-tight text-stone-600'>Copyright © Huy Tran</p>
+      <p class='mt-0.5 text-[10.5px] leading-tight text-stone-400'>Sticker Man Arcade · All rights reserved</p>
     </footer>
   </main>
 
