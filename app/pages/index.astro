@@ -23,7 +23,8 @@ const jsonLd = {
   <main class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] pb-[calc(env(safe-area-inset-bottom,0px)+0.25rem)] sm:px-8 sm:pt-16'>
     <section class='grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4'>
       <header
-        class='col-span-2 flex flex-col justify-center rounded-2xl border border-amber-ink/20 bg-butter-soft p-4 sm:px-7 sm:py-6 shadow-xs'
+        class='col-span-2 flex flex-col justify-center rounded-2xl border-2 border-stone-800 bg-butter-soft p-4 sm:px-7 sm:py-6 shadow-[3.5px_4px_0px_#1f2329]'
+        style='border-radius: 20px 24px 22px 26px / 24px 20px 26px 22px;'
       >
         <StickmanHero />
       </header>
@@ -34,22 +35,24 @@ const jsonLd = {
             href={`/${game.slug}`}
             data-game-slug={game.slug}
             data-game-name={game.name}
-            class='group relative flex flex-col rounded-2xl border border-neutral-200 bg-white p-2 transition-colors hover:border-neutral-300'
+            class='group relative flex flex-col rounded-2xl border-2 border-stone-800/90 bg-white p-2 transition-all hover:-translate-y-0.5 active:translate-x-[1px] active:translate-y-[1px] shadow-[3px_3.5px_0px_#1f2329]'
+            style='border-radius: 18px 22px 19px 23px / 22px 18px 23px 19px;'
           >
-            <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-white'>
+            <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-neutral-50/60 border border-stone-200/80'>
               <img src={`/thumbs/${game.slug}.webp`} alt='' loading='lazy' class='h-[78%] w-[84%] object-contain' />
             </div>
             <div class='px-2 pt-3 pb-2'>
-              <h2 class='font-display text-[17px] leading-tight sm:text-[18px]'>{game.name}</h2>
-              <p class='mt-1 text-[13px] leading-snug text-neutral-500'>{game.tagline}</p>
+              <h2 class='font-display text-[17px] leading-tight sm:text-[18px] text-stone-900'>{game.name}</h2>
+              <p class='mt-1 text-[13px] leading-snug text-neutral-600'>{game.tagline}</p>
             </div>
           </a>
         ))
       }
 
-      <!-- Thẻ Game Mới Sắp Ra Mắt lấp đầy ô trống thẩm mỹ -->
+      <!-- Thẻ Game Mới Sắp Ra Mắt lấp đầy ô trống thẩm mỹ phong cách vẽ tay -->
       <div
-        class='group relative flex flex-col justify-between rounded-2xl border border-dashed border-amber-300/80 bg-amber-50/40 p-2 text-center transition-colors'
+        class='group relative flex flex-col justify-between rounded-2xl border-2 border-dashed border-stone-800/80 bg-amber-50/50 p-2 text-center shadow-[3px_3.5px_0px_#1f2329]'
+        style='border-radius: 18px 22px 19px 23px / 22px 18px 23px 19px;'
       >
         <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-white/80'>
           <svg viewBox="0 0 100 100" class="h-16 w-16" fill="none" stroke="#1f2329" stroke-linecap="round" stroke-linejoin="round">
@@ -139,8 +142,8 @@ const jsonLd = {
         </button>
       </div>
 
-      <!-- Ảnh kết quả minh họa hiển thị trọn vẹn, co giãn theo chiều cao điện thoại -->
-      <div class='relative flex items-center justify-center w-full max-h-[66vh] overflow-hidden rounded-2xl bg-[#f7f7f5] shadow-2xl border-2 border-amber-300/60'>
+      <!-- Ảnh kết quả minh họa hiển thị trọn vẹn, co giãn theo chiều cao điện thoại với viền vẽ tay -->
+      <div class='relative flex items-center justify-center w-full max-h-[66vh] overflow-hidden rounded-2xl bg-[#f7f7f5] shadow-[4px_5px_0px_#1f2329] border-2 border-stone-800' style='border-radius: 20px 24px 22px 26px / 24px 20px 26px 22px;'>
         <img
           id='scorecard-img'
           alt='Báo Cáo Minh Họa Sticker Man'
@@ -148,12 +151,13 @@ const jsonLd = {
         />
       </div>
 
-      <!-- Nút thao tác Lưu ảnh / Đóng -->
+      <!-- Nút thao tác Lưu ảnh / Đóng phong cách vẽ tay -->
       <div class='mt-3 flex w-full max-w-[88vw] gap-2.5'>
         <button
           id='scorecard-share-btn'
           type='button'
-          class='flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-stone-900 font-bold text-[14px] shadow-lg transition-transform cursor-pointer'
+          class='flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-300 hover:bg-amber-200 active:translate-x-[1px] active:translate-y-[1px] text-stone-900 font-bold text-[14px] border-2 border-stone-800 shadow-[2.5px_3px_0px_#1f2329] transition-transform cursor-pointer'
+          style='border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px;'
         >
           <svg class='w-4.5 h-4.5' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>
             <path d='M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8'/>
@@ -166,7 +170,8 @@ const jsonLd = {
         <button
           id='scorecard-close-btn'
           type='button'
-          class='flex items-center justify-center px-4 py-3 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 text-white font-semibold text-[14px] backdrop-blur-sm transition-transform cursor-pointer border border-white/20'
+          class='flex items-center justify-center px-4 py-3 rounded-xl bg-white/20 hover:bg-white/30 active:translate-x-[1px] active:translate-y-[1px] text-white font-semibold text-[14px] backdrop-blur-sm border-2 border-white/60 shadow-[2.5px_3px_0px_rgba(0,0,0,0.3)] transition-transform cursor-pointer'
+          style='border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px;'
         >
           <span>Đóng</span>
         </button>

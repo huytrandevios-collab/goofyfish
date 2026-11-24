@@ -175,22 +175,50 @@
   .back { transition: opacity .3s ease; }
   @media (max-width: 420px) { .back { top: calc(env(safe-area-inset-top, 0px) + 16px); right: max(14px, env(safe-area-inset-right, 0px)); font-size: 13px; } }
 
+  
+
+  /* Comic Hand-Drawn Doodle Style matching Balsamiq Sans */
+  .card, .panel {
+    border: 2.5px solid #1f2329 !important;
+    border-radius: 22px 25px 21px 26px / 25px 22px 26px 21px !important;
+    box-shadow: 4px 5px 0px #1f2329, 0 12px 30px rgba(0, 0, 0, 0.1) !important;
+  }
+  .btn, .pb {
+    border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px !important;
+    transition: transform .12s, background .2s, box-shadow .12s !important;
+  }
+  .btn.primary, .pb.run {
+    border: 2px solid #78350f !important;
+    box-shadow: 2.5px 3px 0px #78350f !important;
+  }
+  .btn.primary:active, .pb.run:active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 1px 1px 0px #78350f !important;
+  }
+  .btn.ghost, .pb:not(.run) {
+    border: 2px solid #1f2329 !important;
+    box-shadow: 2.5px 3px 0px #1f2329 !important;
+  }
+  .btn.ghost:active, .pb:not(.run):active {
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 1px 1px 0px #1f2329 !important;
+  }
   .exit {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
     margin: 18px auto 0 !important;
-    padding: 8px 20px !important;
+    padding: 8px 22px !important;
     background: #1c1917 !important;
     color: #ffffff !important;
-    font-size: 13px !important;
+    font-size: 13.5px !important;
     font-weight: 600 !important;
     line-height: 1 !important;
     text-decoration: none !important;
     border-radius: 9999px !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+    border: 2px solid #1c1917 !important;
+    box-shadow: 2.5px 3px 0px rgba(0, 0, 0, 0.4) !important;
     cursor: pointer !important;
     transition: transform 0.12s ease, opacity 0.12s ease !important;
     -webkit-tap-highlight-color: transparent !important;
@@ -198,8 +226,8 @@
     width: fit-content !important;
   }
   .exit:active {
-    transform: scale(0.95) !important;
-    opacity: 0.9 !important;
+    transform: translate(1.5px, 1.5px) !important;
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.4) !important;
   }
   .back {
     display: none !important;
