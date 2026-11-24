@@ -12,10 +12,14 @@
     "game:motion": "node scripts/check-motion.mjs"
   },
   "dependencies": {
+    "@capacitor/core": "^8.6.2",
     "astro": "^7.4.12"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
     "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^22",
     "playwright": "^1.65.1",

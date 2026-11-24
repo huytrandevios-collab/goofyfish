@@ -35,6 +35,20 @@ const jsonLd = {
   <main class='fixed inset-0 overflow-hidden overscroll-none bg-white'>
     <h1 class='sr-only'>{game.name}</h1>
     <p class='sr-only'>{game.description}</p>
+    
+    <!-- Floating Back to Hub Button for Mobile App -->
+    <a
+      href='/'
+      aria-label='Back to games'
+      class='fixed z-50 flex items-center justify-center size-10 rounded-full border border-black/10 bg-white/90 text-stone-700 shadow-sm backdrop-blur-md transition-transform active:scale-90 hover:bg-white hover:text-black'
+      style='top: calc(env(safe-area-inset-top, 0px) + 14px); right: max(16px, env(safe-area-inset-right, 0px));'
+    >
+      <svg viewBox='0 0 24 24' class='size-5' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'></path>
+        <polyline points='9 22 9 12 15 12 15 22'></polyline>
+      </svg>
+    </a>
+
     <iframe
       id='game'
       data-src={`/games/${game.slug}.html`}

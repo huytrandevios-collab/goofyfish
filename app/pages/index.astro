@@ -19,7 +19,7 @@ const jsonLd = {
 ---
 
 <Base title={`${SITE.name} · ${SITE.tagline}`} description={SITE.description} path='/' jsonLd={jsonLd}>
-  <main class='mx-auto max-w-[1120px] px-4 pt-10 pb-20 sm:px-8 sm:pt-16'>
+  <main class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] pb-[calc(env(safe-area-inset-bottom,0px)+3rem)] sm:px-8 sm:pt-16'>
     <section class='grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4'>
       <header
         class='col-span-2 flex flex-col justify-center rounded-2xl border border-amber-ink/20 bg-butter-soft p-5 sm:px-7 sm:py-6'
