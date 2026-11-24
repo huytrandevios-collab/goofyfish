@@ -20,46 +20,44 @@ const jsonLd = {
 ---
 
 <Base title={`${SITE.name} · ${SITE.tagline}`} description={SITE.description} path='/' jsonLd={jsonLd}>
-  <!-- Top App Bar: Stickman War & Notification Bell -->
-  <nav class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+0.2rem)] pb-1.5 flex items-center justify-between sm:px-8'>
-    <div class='flex items-center gap-2.5'>
-      <!-- Cute Stickman Logo Icon -->
-      <div class='flex size-9 items-center justify-center rounded-xl border-2 border-stone-800 bg-butter shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 11px 13px 10px 12px / 13px 11px 12px 10px;'>
-        <svg viewBox="0 0 24 24" class="size-5.5 text-stone-900" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="5" r="3" fill="#fff" />
-          <path d="M12 8v6M8 11l4-1 4 2M9 19l3-5 3 5" />
-          <path d="M7 5l-2-1" stroke="#ea580c" stroke-width="2" />
-        </svg>
+  <!-- Top App Bar: Stickman War & Notification Bell (Locked / Sticky at top by default) -->
+  <header class='sticky top-0 z-30 w-full bg-[#f7f7f5]/95 backdrop-blur-md border-b border-stone-800/10 shadow-[0_1px_4px_rgba(0,0,0,0.04)]'>
+    <nav class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+0.2rem)] pb-1.5 flex items-center justify-between sm:px-8'>
+      <div class='flex items-center gap-2.5'>
+        <!-- Official Stickman War App Icon with Comic Border -->
+        <div class='relative flex size-9.5 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 11px 13px 10px 12px / 13px 11px 12px 10px;'>
+          <img src="/favicon-192.png" alt="Stickman War Icon" class="size-full object-cover" />
+        </div>
+        <div>
+          <h1 class='font-display text-[20px] font-bold tracking-tight text-stone-900 sm:text-[23px] leading-none'>
+            Stickman War
+          </h1>
+          <p class='text-[11px] font-medium text-amber-900/80 leading-tight mt-0.5'>
+            Arcade Battle Edition
+          </p>
+        </div>
       </div>
-      <div>
-        <h1 class='font-display text-[20px] font-bold tracking-tight text-stone-900 sm:text-[23px] leading-none'>
-          Stickman War
-        </h1>
-        <p class='text-[11px] font-medium text-amber-900/80 leading-tight mt-0.5'>
-          Arcade Battle Edition
-        </p>
-      </div>
-    </div>
 
-    <!-- Notification Bell Button with Comic Doodle Border -->
-    <button
-      id='notif-bell-btn'
-      type='button'
-      aria-label='Thông báo'
-      class='group relative flex size-10 items-center justify-center rounded-xl border-2 border-stone-800 bg-white transition-all hover:bg-amber-50 active:translate-x-[1px] active:translate-y-[1px] shadow-[2.5px_3px_0px_#1f2329]'
-      style='border-radius: 12px 14px 11px 13px / 14px 12px 13px 11px;'
-    >
-      <svg viewBox="0 0 24 24" class="size-5 text-stone-800 transition-transform group-hover:rotate-12 group-active:scale-90" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-      </svg>
-      <!-- Active Notification Dot -->
-      <span class='absolute top-1.5 right-1.5 flex size-2.5'>
-        <span class='absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75'></span>
-        <span class='relative inline-flex size-2.5 rounded-full border border-stone-900 bg-amber-500'></span>
-      </span>
-    </button>
-  </nav>
+      <!-- Notification Bell Button with Comic Doodle Border -->
+      <button
+        id='notif-bell-btn'
+        type='button'
+        aria-label='Thông báo'
+        class='group relative flex size-10 items-center justify-center rounded-xl border-2 border-stone-800 bg-white transition-all hover:bg-amber-50 active:translate-x-[1px] active:translate-y-[1px] shadow-[2.5px_3px_0px_#1f2329]'
+        style='border-radius: 12px 14px 11px 13px / 14px 12px 13px 11px;'
+      >
+        <svg viewBox="0 0 24 24" class="size-5 text-stone-800 transition-transform group-hover:rotate-12 group-active:scale-90" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+        </svg>
+        <!-- Active Notification Dot -->
+        <span class='absolute top-1.5 right-1.5 flex size-2.5'>
+          <span class='absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75'></span>
+          <span class='relative inline-flex size-2.5 rounded-full border border-stone-900 bg-amber-500'></span>
+        </span>
+      </button>
+    </nav>
+  </header>
 
   <main class='mx-auto max-w-[1120px] px-4 pt-1 pb-[calc(env(safe-area-inset-bottom,0px)+0.25rem)] sm:px-8 sm:pt-2'>
     <section class='grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4'>
