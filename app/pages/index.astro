@@ -245,6 +245,14 @@ const jsonLd = {
       });
 
       window.closeGame = closeGame;
+
+      function setHomeButtonVisible(visible) {
+        if (closeBtn) {
+          closeBtn.style.display = visible ? 'flex' : 'none';
+        }
+      }
+      window.setHomeButtonVisible = setHomeButtonVisible;
+
       if (closeBtn) {
         closeBtn.onclick = (e) => {
           e.preventDefault();
@@ -268,6 +276,27 @@ const jsonLd = {
 
           // Chặn double-tap zoom trên WebKit
           doc.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+
+          // Kiểm soát ẩn/hiện nút Home góc trên: Khi thẻ kết game/start card xuất hiện thì ẩn nút nổi (vì đã có nút Trang chủ bên trong thẻ)
+          function checkCardState() {
+            try {
+              const hasCard = !!(
+                doc.querySelector('.card.show') ||
+                doc.querySelector('#overlay.on') ||
+                doc.querySelector('.modal.show') ||
+                doc.querySelector('#startCard.show') ||
+                doc.querySelector('#endCard.show')
+              );
+              setHomeButtonVisible(!hasCard);
+            } catch (e) {}
+          }
+
+          try {
+            const obs = new win.MutationObserver(checkCardState);
+            obs.observe(doc.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+            checkCardState();
+            setTimeout(checkCardState, 200);
+          } catch (e) {}
 
           // Bắt sự kiện thoát game
           doc.addEventListener('click', (ev) => {
@@ -310,14 +339,16 @@ const jsonLd = {
         modal.style.display = 'block';
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+        setHomeButtonVisible(false);
 
         frame.onload = setupIframe;
       }
 
       // Also listen for popstate or messages
       window.addEventListener('message', (ev) => {
-        if (ev.data === 'close-game') closeGame();
+        if (ev.data === 'close-game' || ev.data?.type === 'close-game') closeGame();
         if (ev.data?.type === 'show-scorecard') openScorecard(ev.data.url, ev.data.filename);
+        if (ev.data?.type === 'set_home_btn') setHomeButtonVisible(ev.data.visible);
       });
 
       document.querySelectorAll('[data-game-slug]').forEach((card) => {

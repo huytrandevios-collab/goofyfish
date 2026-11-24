@@ -151,6 +151,36 @@
   .back { position: fixed; z-index: 6; top: calc(env(safe-area-inset-top, 0px) + 22px); right: max(20px, env(safe-area-inset-right, 0px)); font-size: 14px; color: var(--soft); text-decoration: none; }
   .back:hover { color: var(--ink); }
   @media (max-width: 420px) { .back { top: calc(env(safe-area-inset-top, 0px) + 16px); right: max(14px, env(safe-area-inset-right, 0px)); font-size: 13px; } }
+
+  .exit {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    margin: 18px auto 0 !important;
+    padding: 8px 20px !important;
+    background: #1c1917 !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    border-radius: 9999px !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+    cursor: pointer !important;
+    transition: transform 0.12s ease, opacity 0.12s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+    user-select: none !important;
+    width: fit-content !important;
+  }
+  .exit:active {
+    transform: scale(0.95) !important;
+    opacity: 0.9 !important;
+  }
+  .back {
+    display: none !important;
+  }
 </style>
 </head>
 <body>
@@ -184,7 +214,7 @@
       <button class="btn primary" id="playBtn"><span>Play</span><kbd class="kbd-only">Space</kbd></button>
     </div>
     <div class="foot" id="startFoot"></div>
-    <a class="exit" href="/" target="_top">← All games</a>
+    <a class="exit" href="javascript:void(0)" onclick="if(window.parent&&window.parent.closeGame){window.parent.closeGame();}else{window.top.location.href='/';}return false;"><svg style="width:13px;height:13px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg><span>Trang chủ</span></a>
   </div>
   <div class="card" id="endCard">
     <div class="row">
@@ -205,7 +235,7 @@
       <button class="btn ghost" id="shareBtn" aria-label="Download image" title="Download image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
     </div>
     <div class="foot" id="endFoot"></div>
-    <a class="exit" href="/" target="_top">← All games</a>
+    <a class="exit" href="javascript:void(0)" onclick="if(window.parent&&window.parent.closeGame){window.parent.closeGame();}else{window.top.location.href='/';}return false;"><svg style="width:13px;height:13px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg><span>Trang chủ</span></a>
   </div>
 </div>
 
@@ -3601,6 +3631,33 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+</script>
+
+<script>
+(function() {
+  function syncCardState() {
+    try {
+      var hasCard = !!(
+        document.querySelector('.card.show') ||
+        document.querySelector('#overlay.on') ||
+        document.querySelector('.modal.show') ||
+        document.querySelector('#startCard.show') ||
+        document.querySelector('#endCard.show') ||
+        document.querySelector('#winCard.show') ||
+        document.querySelector('#failCard.show')
+      );
+      if (window.parent && window.parent.setHomeButtonVisible) {
+        window.parent.setHomeButtonVisible(!hasCard);
+      }
+    } catch(e) {}
+  }
+  try {
+    var obs = new MutationObserver(syncCardState);
+    obs.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+    window.addEventListener('load', syncCardState);
+    setTimeout(syncCardState, 150);
+  } catch(e) {}
+})();
 </script>
 </body>
 </html>
