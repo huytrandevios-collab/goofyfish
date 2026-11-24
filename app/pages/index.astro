@@ -114,18 +114,115 @@ const jsonLd = {
     </button>
   </div>
 
+  <!-- Scorecard Preview Modal: Hiển thị ảnh kết quả vừa vặn 100% màn hình điện thoại, không bao giờ bị phóng to quá cỡ -->
+  <div
+    id='scorecard-modal'
+    class='fixed inset-0 z-[100000] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity select-none'
+    style='display: none;'
+  >
+    <div class='relative max-w-sm w-full flex flex-col items-center animate-in fade-in zoom-in-95 duration-200'>
+      <div class='text-center mb-3 text-white'>
+        <p class='text-[16px] font-bold text-amber-300'>Thẻ Kết Quả Của Bạn</p>
+        <p class='text-[12px] text-stone-300'>Ảnh được tối ưu vừa vặn cho thiết bị</p>
+      </div>
+
+      <!-- Ảnh kết quả co giãn tự động không tràn màn hình -->
+      <img
+        id='scorecard-img'
+        alt='Thẻ Điểm Sticker Man'
+        class='w-auto max-h-[60vh] max-w-[85vw] object-contain rounded-2xl shadow-2xl border border-white/20 bg-white'
+      />
+
+      <!-- Nút thao tác trực quan -->
+      <div class='mt-4 flex w-full max-w-[85vw] gap-3'>
+        <button
+          id='scorecard-share-btn'
+          type='button'
+          class='flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-stone-900 font-bold text-[14.5px] shadow-lg transition-transform cursor-pointer'
+        >
+          <svg class='w-4.5 h-4.5' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'>
+            <path d='M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8'/>
+            <polyline points='16 6 12 2 8 6'/>
+            <line x1='12' y1='2' x2='12' y2='15'/>
+          </svg>
+          <span>Lưu / Chia sẻ</span>
+        </button>
+
+        <button
+          id='scorecard-close-btn'
+          type='button'
+          class='flex items-center justify-center gap-1.5 py-3 px-5 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 text-white font-semibold text-[14.5px] backdrop-blur-sm transition-transform cursor-pointer border border-white/20'
+        >
+          <span>Đóng</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script is:inline>
     {
       const modal = document.getElementById('game-modal');
       const frame = document.getElementById('modal-game-frame');
       const closeBtn = document.getElementById('modal-close-btn');
 
+      const scorecardModal = document.getElementById('scorecard-modal');
+      const scorecardImg = document.getElementById('scorecard-img');
+      const scorecardShareBtn = document.getElementById('scorecard-share-btn');
+      const scorecardCloseBtn = document.getElementById('scorecard-close-btn');
+
+      let currentBlobUrl = null;
+      let currentFile = null;
+
       function closeGame() {
         if (!modal || !frame) return;
         frame.src = 'about:blank';
         modal.classList.add('hidden');
         document.body.style.overflow = '';
+        closeScorecard();
       }
+
+      function openScorecard(blobUrl, filename) {
+        if (!scorecardModal || !scorecardImg) return;
+        currentBlobUrl = blobUrl;
+        scorecardImg.src = blobUrl;
+        scorecardModal.style.display = 'flex';
+        scorecardModal.classList.remove('hidden');
+
+        fetch(blobUrl)
+          .then((r) => r.blob())
+          .then((blob) => {
+            currentFile = new File([blob], filename || 'stickerman-score.png', { type: 'image/png' });
+          })
+          .catch(() => {});
+      }
+
+      function closeScorecard() {
+        if (!scorecardModal) return;
+        scorecardModal.style.display = 'none';
+        scorecardModal.classList.add('hidden');
+      }
+
+      scorecardCloseBtn?.addEventListener('click', closeScorecard);
+
+      scorecardShareBtn?.addEventListener('click', async () => {
+        if (currentFile && navigator.canShare && navigator.canShare({ files: [currentFile] })) {
+          try {
+            await navigator.share({
+              files: [currentFile],
+              title: 'Sticker Man Score',
+              text: 'Kỷ lục Sticker Man của tôi!'
+            });
+          } catch (e) {}
+        } else if (currentBlobUrl) {
+          // Native share sheet or download fallback
+          const a = document.createElement('a');
+          a.href = currentBlobUrl;
+          a.download = currentFile?.name || 'stickerman-score.png';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      });
 
       window.closeGame = closeGame;
       if (closeBtn) {
@@ -133,24 +230,6 @@ const jsonLd = {
           e.preventDefault();
           closeGame();
         };
-      }
-
-      async function handleBlobShare(blobUrl, filename) {
-        try {
-          const resp = await fetch(blobUrl);
-          const blob = await resp.blob();
-          const file = new File([blob], filename, { type: 'image/png' });
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: 'Sticker Man Score',
-              text: 'Kỷ lục Sticker Man của tôi!'
-            });
-            return;
-          }
-        } catch (err) {
-          if (err.name === 'AbortError') return;
-        }
       }
 
       function setupIframe() {
@@ -161,7 +240,16 @@ const jsonLd = {
 
           win.focus();
 
-          // Intercept native exit/all games links inside the game
+          // Tối ưu viewport chống zoom quá cỡ
+          let meta = doc.querySelector('meta[name="viewport"]');
+          if (meta) {
+            meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+          }
+
+          // Chặn double-tap zoom trên WebKit
+          doc.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+
+          // Bắt sự kiện thoát game
           doc.addEventListener('click', (ev) => {
             const a = ev.target.closest('a');
             if (a) {
@@ -172,21 +260,21 @@ const jsonLd = {
                 closeGame();
                 return;
               }
-              // Prevent navigation to raw blob image URLs
+              // Chặn điều hướng trực tiếp sang file ảnh blob
               if (a.href && (a.href.startsWith('blob:') || a.download)) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                handleBlobShare(a.href, a.download || 'stickerman.png');
+                openScorecard(a.href, a.download || 'stickerman-score.png');
                 return;
               }
             }
           }, true);
 
-          // Prevent programmatic a.click() on blob from navigating the webview
+          // Bắt lệnh click tải ảnh từ code js của game và chuyển hướng sang popup xem ảnh chuẩn mobile
           const origClick = win.HTMLAnchorElement.prototype.click;
           win.HTMLAnchorElement.prototype.click = function() {
             if (this.href && (this.href.startsWith('blob:') || this.download)) {
-              handleBlobShare(this.href, this.download || 'stickerman.png');
+              openScorecard(this.href, this.download || 'stickerman-score.png');
               return;
             }
             return origClick.apply(this, arguments);
