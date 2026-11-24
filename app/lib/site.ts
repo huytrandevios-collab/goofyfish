@@ -1,12 +1,12 @@
 export const SITE = {
-  name: 'Goofy Fish',
+  name: 'Sticker Man',
   url: 'https://goofyfish.com',
-  tagline: 'Small, silly games for the browser',
+  tagline: 'Silly Mini Games Arcade',
   description:
-    'Small, silly games that run in your browser. Free, no ads, no sign-ups, no downloads. Best with sound on.',
-  twitter: '@nilbuild',
-  github: 'https://github.com/nilbuild/goofyfish',
-  author: { name: 'Kamran Ahmed', url: 'https://kamran.fyi' },
+    'Silly, addictive one-tap stickman games in your pocket. 100% Free · No Wi-Fi needed.',
+  twitter: '@huytrandev',
+  github: 'https://github.com/huytrandevios-collab/goofyfish',
+  author: { name: 'Huy Tran', url: 'https://github.com/huytrandevios-collab' },
 };
 
 export function absoluteUrl(path: string) {

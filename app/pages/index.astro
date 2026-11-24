@@ -46,35 +46,11 @@ const jsonLd = {
           </a>
         ))
       }
-
-      <a
-        href='/make'
-        class='group flex flex-col rounded-2xl border-2 border-dashed border-neutral-200 p-2 transition-colors hover:border-amber-ink/40 hover:bg-butter-soft/40'
-      >
-        <div class='flex aspect-[4/3] items-center justify-center'>
-          <span
-            class='grid size-14 place-items-center rounded-full border border-amber-ink/20 bg-butter text-umber sm:size-16'
-          >
-            <svg viewBox='0 0 24 24' class='size-7' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round'>
-              <path d='M12 5v14M5 12h14'></path>
-            </svg>
-          </span>
-        </div>
-        <div class='px-2 pt-3 pb-2'>
-          <h2 class='font-display text-[17px] leading-tight sm:text-[18px]'>Make & submit a game</h2>
-          <p class='mt-1 text-[13px] leading-snug text-neutral-500'>Build it with Claude Code, we put it on the site</p>
-        </div>
-      </a>
     </section>
 
-    <footer class='mt-20 flex flex-col items-center gap-1 text-center text-[13.5px] text-neutral-400'>
-      <span>
-        {games.length} games so far.{' '}
-        <a href='/make' class='underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-900'>
-          Add yours
-        </a>.
-      </span>
-      <a href={SITE.author.url} class='transition-colors hover:text-neutral-900'>Made by {SITE.author.name}</a>
+    <footer class='mt-16 pb-8 flex flex-col items-center gap-1 text-center text-[13.5px] text-stone-400'>
+      <p class='font-medium text-stone-600'>Copyright © Huy Tran</p>
+      <p class='text-[12px] text-stone-400'>Sticker Man Arcade · All rights reserved</p>
     </footer>
   </main>
 
