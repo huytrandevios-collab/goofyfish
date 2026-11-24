@@ -1,0 +1,224 @@
+---
+type Props = {
+  class?: string;
+};
+---
+
+<div class={`flex flex-col gap-4 ${Astro.props.class || ''}`}>
+  <!-- Cute Action Stickmen Illustration Banner -->
+  <div class="relative w-full overflow-hidden rounded-2xl bg-gradient-to-r from-amber-100/90 via-butter-soft to-amber-50 p-3 pt-4 border border-amber-ink/15 shadow-inner">
+    <!-- Action Sparks and Decorative Dots -->
+    <div class="absolute -right-4 -top-4 size-24 rounded-full bg-butter/40 blur-xl pointer-events-none"></div>
+    <div class="absolute left-1/3 -bottom-4 size-20 rounded-full bg-amber-200/30 blur-lg pointer-events-none"></div>
+
+    <svg
+      viewBox="0 0 420 160"
+      class="w-full h-auto max-h-[160px] select-none"
+      fill="none"
+      stroke="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <!-- Gradients & Filters -->
+        <filter id="star-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#b45309" flood-opacity="0.25" />
+        </filter>
+        <radialGradient id="balloon-grad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#fde68a" />
+          <stop offset="100%" stop-color="#f59e0b" />
+        </radialGradient>
+      </defs>
+
+      <!-- Floor Guideline with Hand-drawn Dots -->
+      <line x1="20" y1="145" x2="400" y2="145" stroke="#1f2329" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0.5 8" />
+
+      <!-- ================= 1. BOXER / NINJA STICKMAN (LEFT) ================= -->
+      <g class="animate-bounce-gentle">
+        <!-- Dust Puffs behind feet -->
+        <ellipse cx="65" cy="144" rx="7" ry="3.5" fill="#e5e5e5" />
+        <ellipse cx="56" cy="142" rx="4" ry="2" fill="#d4d4d4" />
+
+        <!-- Ninja Headband Tails (Fluttering) -->
+        <path d="M72 44 C60 40 50 48 42 46" stroke="#ea580c" stroke-width="3" stroke-linecap="round" fill="none" />
+        <path d="M72 48 C58 48 48 56 38 55" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" fill="none" />
+
+        <!-- Head -->
+        <circle cx="88" cy="48" r="16" fill="#ffffff" stroke="#1f2329" stroke-width="2.8" />
+        <!-- Headband knot on head -->
+        <path d="M73 44 Q88 38 103 44" stroke="#ea580c" stroke-width="4" stroke-linecap="round" fill="none" />
+        <!-- Cute Determined Eyes (ò_ó) -->
+        <path d="M82 46 L87 49" stroke="#1f2329" stroke-width="2" stroke-linecap="round" />
+        <path d="M96 46 L91 49" stroke="#1f2329" stroke-width="2" stroke-linecap="round" />
+        <circle cx="85" cy="51" r="2.2" fill="#1f2329" />
+        <circle cx="93" cy="51" r="2.2" fill="#1f2329" />
+        <!-- Determined smile -->
+        <path d="M86 57 Q89 60 93 57" stroke="#1f2329" stroke-width="2" stroke-linecap="round" fill="none" />
+
+        <!-- Body -->
+        <path d="M88 64 L85 106" stroke="#1f2329" stroke-width="3.2" stroke-linecap="round" />
+
+        <!-- Back Leg -->
+        <path d="M85 106 L68 124 L62 145" stroke="#1f2329" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <!-- Front Lunge Leg -->
+        <path d="M85 106 L104 122 L116 145" stroke="#1f2329" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+
+        <!-- Left Guard Arm -->
+        <path d="M87 74 L70 82 L72 96" stroke="#1f2329" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="72" cy="97" r="3.5" fill="#fde68a" stroke="#1f2329" stroke-width="2" />
+
+        <!-- Right Power Punch Arm -->
+        <path d="M87 74 L122 72 L150 72" stroke="#1f2329" stroke-width="3.2" stroke-linecap="round" />
+        <!-- Boxing Glove Fist -->
+        <circle cx="154" cy="72" r="6.5" fill="#ea580c" stroke="#1f2329" stroke-width="2.5" />
+
+        <!-- Punch Impact Burst (Star & Speed Lines) -->
+        <g transform="translate(164, 72)" filter="url(#star-glow)">
+          <path d="M0 -14 L4 -4 L14 -4 L6 2 L9 13 L0 6 L-9 13 L-6 2 L-14 -4 L-4 -4 Z" fill="#fde68a" stroke="#b45309" stroke-width="2" stroke-linejoin="round" />
+          <circle cx="0" cy="0" r="3" fill="#ea580c" />
+          <!-- Action speed lines -->
+          <line x1="16" y1="-7" x2="26" y2="-11" stroke="#ea580c" stroke-width="2" stroke-linecap="round" />
+          <line x1="18" y1="0" x2="30" y2="0" stroke="#ea580c" stroke-width="2.5" stroke-linecap="round" />
+          <line x1="16" y1="8" x2="27" y2="12" stroke="#ea580c" stroke-width="2" stroke-linecap="round" />
+        </g>
+      </g>
+
+      <!-- ================= 2. BALLOON FLOATER STICKMAN (CENTER) ================= -->
+      <g>
+        <!-- Floating Yellow Balloon -->
+        <g class="animate-float">
+          <!-- Balloon Body -->
+          <ellipse cx="218" cy="30" rx="18" ry="22" fill="url(#balloon-grad)" stroke="#1f2329" stroke-width="2.6" />
+          <!-- Balloon Highlight -->
+          <ellipse cx="212" cy="22" rx="4.5" ry="8" fill="#ffffff" opacity="0.75" transform="rotate(-15 212 22)" />
+          <!-- Balloon Knot -->
+          <polygon points="216,51 220,51 218,55" fill="#f59e0b" stroke="#1f2329" stroke-width="1.8" />
+          <!-- Balloon String -->
+          <path d="M218 55 Q212 70 216 85 Q220 95 214 105" stroke="#78350f" stroke-width="1.6" stroke-dasharray="2 1" fill="none" />
+        </g>
+
+        <!-- Floating Cute Stickman -->
+        <!-- Head -->
+        <circle cx="210" cy="90" r="14" fill="#ffffff" stroke="#1f2329" stroke-width="2.6" />
+        <!-- Happy Eyes (^_^) -->
+        <path d="M204 88 Q207 85 210 88" stroke="#1f2329" stroke-width="2.2" stroke-linecap="round" fill="none" />
+        <path d="M214 88 Q217 85 220 88" stroke="#1f2329" stroke-width="2.2" stroke-linecap="round" fill="none" />
+        <!-- Blushing Cute Cheeks -->
+        <ellipse cx="203" cy="94" rx="2.5" ry="1.5" fill="#f87171" opacity="0.8" />
+        <ellipse cx="221" cy="94" rx="2.5" ry="1.5" fill="#f87171" opacity="0.8" />
+        <!-- Joyful Open Mouth -->
+        <path d="M209 92 Q212 96 215 92" stroke="#1f2329" stroke-width="1.8" stroke-linecap="round" fill="#f87171" />
+
+        <!-- Body -->
+        <path d="M211 104 L213 130" stroke="#1f2329" stroke-width="2.8" stroke-linecap="round" />
+
+        <!-- Right Arm Holding String -->
+        <path d="M211 110 L214 105" stroke="#1f2329" stroke-width="2.6" stroke-linecap="round" />
+        <!-- Left Arm Waving -->
+        <path d="M211 110 L195 102 L188 92" stroke="#1f2329" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="187" cy="91" r="3" fill="#ffffff" stroke="#1f2329" stroke-width="1.8" />
+
+        <!-- Dangling Playful Legs -->
+        <path d="M213 130 L203 144 L197 142" stroke="#1f2329" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M213 130 L223 142 L230 141" stroke="#1f2329" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+
+      <!-- ================= 3. LUMBERJACK & HOOPS STICKMAN (RIGHT) ================= -->
+      <g>
+        <!-- Wood Log Stump -->
+        <rect x="366" y="118" width="24" height="27" rx="3" fill="#fef3c7" stroke="#78350f" stroke-width="2.2" />
+        <ellipse cx="378" cy="118" rx="12" ry="4" fill="#fde68a" stroke="#78350f" stroke-width="2" />
+        <!-- Flying wood chip -->
+        <polygon points="360,105 365,102 363,108" fill="#d97706" />
+
+        <!-- Lumberjack Head -->
+        <circle cx="330" cy="56" r="15" fill="#ffffff" stroke="#1f2329" stroke-width="2.8" />
+        <!-- Cool winking eye and smile (^_-) -->
+        <path d="M323 54 Q326 51 329 54" stroke="#1f2329" stroke-width="2" stroke-linecap="round" fill="none" />
+        <!-- Winking Eye -->
+        <path d="M334 55 L339 55" stroke="#1f2329" stroke-width="2.2" stroke-linecap="round" />
+        <!-- Smirk smile -->
+        <path d="M326 62 Q331 66 337 62" stroke="#1f2329" stroke-width="2" stroke-linecap="round" fill="none" />
+
+        <!-- Body -->
+        <path d="M330 71 L335 110" stroke="#1f2329" stroke-width="3" stroke-linecap="round" />
+
+        <!-- Wide Stance Sturdy Legs -->
+        <path d="M335 110 L318 128 L314 145" stroke="#1f2329" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M335 110 L346 128 L354 145" stroke="#1f2329" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+        <!-- Arms Swinging Mighty Axe -->
+        <path d="M332 78 L348 88 L360 98" stroke="#1f2329" stroke-width="2.8" stroke-linecap="round" />
+        <path d="M332 78 L344 86 L355 94" stroke="#1f2329" stroke-width="2.8" stroke-linecap="round" />
+
+        <!-- Axe -->
+        <line x1="338" y1="120" x2="376" y2="76" stroke="#92400e" stroke-width="3.5" stroke-linecap="round" />
+        <!-- Steel Axe Head -->
+        <path d="M370 74 L384 64 C388 72 388 80 382 88 L374 80 Z" fill="#e5e5e5" stroke="#1f2329" stroke-width="2.4" stroke-linejoin="round" />
+
+        <!-- Basketball ready nearby -->
+        <g transform="translate(272, 126)">
+          <circle cx="10" cy="10" r="9" fill="#f97316" stroke="#1f2329" stroke-width="2" />
+          <path d="M1 10 H19 M10 1 V19 M4 4 Q10 8 16 4 M4 16 Q10 12 16 16" stroke="#1f2329" stroke-width="1.2" fill="none" />
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Header Text & Quick Action Controls -->
+  <div class="flex flex-col gap-2.5">
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-ink/20 bg-butter/60 px-2.5 py-0.5 text-[11px] font-bold tracking-wider text-amber-900 uppercase">
+        <span class="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        100% Offline Arcade
+      </span>
+      <span class="text-[12px] font-medium text-stone-500">· 19 Minigames</span>
+    </div>
+
+    <h1 class="font-display text-[24px] sm:text-[32px] leading-[1.1] text-balance text-stone-900">
+      Sticker Man: Silly Mini Games
+    </h1>
+    
+    <p class="text-[13.5px] sm:text-[15px] leading-snug text-stone-600">
+      Kho game người que hành động 1-chạm siêu cuốn. Chơi ngay lập tức, không cần mạng!
+    </p>
+
+    <!-- Quick Play Action Buttons -->
+    <div class="mt-2 flex flex-wrap items-center gap-2.5">
+      <button
+        id="quick-play-btn"
+        type="button"
+        class="font-display flex h-11 items-center gap-2 rounded-xl border border-amber-ink/30 bg-butter px-5 text-[15px] font-medium text-umber shadow-sm transition hover:bg-butter-hi active:scale-[.97]"
+      >
+        <span class="text-base">🎲</span>
+        <span>Chơi Ngẫu Nhiên</span>
+      </button>
+
+      <button
+        id="top-pick-btn"
+        type="button"
+        class="font-display flex h-11 items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 text-[15px] text-stone-800 shadow-xs transition hover:bg-stone-50 active:scale-[.97]"
+      >
+        <span>🥊 Goon Rush (Top 1)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes bounceGentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  @keyframes floatSlow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-4px) rotate(2deg); }
+  }
+  .animate-bounce-gentle {
+    animation: bounceGentle 2.4s ease-in-out infinite;
+  }
+  .animate-float {
+    animation: floatSlow 3.2s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+</style>
