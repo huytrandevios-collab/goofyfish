@@ -55,6 +55,8 @@ const jsonLd = {
         games.map((game) => (
           <a
             href={`/${game.slug}`}
+            data-game-slug={game.slug}
+            data-game-name={game.name}
             class='group relative flex flex-col rounded-2xl border border-neutral-200 bg-white p-2 transition-colors hover:border-neutral-300'
           >
             <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-white'>
@@ -98,4 +100,68 @@ const jsonLd = {
       <a href={SITE.author.url} class='transition-colors hover:text-neutral-900'>Made by {SITE.author.name}</a>
     </footer>
   </main>
+
+  <!-- Full-screen In-App Game Player for Mobile -->
+  <div id='game-modal' class='fixed inset-0 z-50 hidden bg-white'>
+    <iframe
+      id='modal-game-frame'
+      title='Game View'
+      allow='camera; microphone; fullscreen; autoplay; web-share; clipboard-write'
+      class='w-full h-full border-0 block bg-white'
+    ></iframe>
+  </div>
+
+  <script is:inline>
+    {
+      const modal = document.getElementById('game-modal');
+      const frame = document.getElementById('modal-game-frame');
+
+      function openGame(slug) {
+        if (!modal || !frame) return;
+        frame.src = `/games/${slug}.html`;
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        
+        // Listen for when game finishes loading
+        frame.addEventListener(
+          'load',
+          () => {
+            frame.contentWindow?.focus();
+            try {
+              // Intercept the game's native "← all games" link to close modal smoothly with zero latency
+              frame.contentDocument?.querySelectorAll('a[href="/"]').forEach((link) => {
+                link.addEventListener('click', (ev) => {
+                  ev.preventDefault();
+                  closeGame();
+                });
+              });
+            } catch (err) {}
+          },
+          { once: true }
+        );
+      }
+
+      function closeGame() {
+        if (!modal || !frame) return;
+        frame.src = 'about:blank';
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      // Also listen for popstate or messages
+      window.addEventListener('message', (ev) => {
+        if (ev.data === 'close-game') closeGame();
+      });
+
+      document.querySelectorAll('[data-game-slug]').forEach((card) => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          const slug = card.getAttribute('data-game-slug');
+          if (slug) {
+            openGame(slug);
+          }
+        });
+      });
+    }
+  </script>
 </Base>
