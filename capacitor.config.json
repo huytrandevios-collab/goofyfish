@@ -1,6 +1,6 @@
 {
   "appId": "com.huytrandev.stickerman",
-  "appName": "Sticker Man",
+  "appName": "Stickman War",
   "webDir": "build/client",
   "backgroundColor": "#f7f7f5",
   "server": {

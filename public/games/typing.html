@@ -127,13 +127,66 @@
     .lv:not(.sel):hover { background: var(--chip); }
   }
 
-  .nokb { display: none; text-align: center; padding: 18px 8px 6px; }
-  .nokb svg { width: 64px; height: 40px; margin-bottom: 12px; }
-  .nokb p { font-size: 17px; margin: 0 0 6px; }
-  .nokb .label { font-size: 14px; margin-bottom: 20px; }
-  .nokb a { display: inline-flex; text-decoration: none; padding: 0 32px; }
-  body.phone .nokb { display: block; }
-  body.phone #menu { display: none; }
+  .nokb { display: none !important; }
+  body.phone .nokb { display: none !important; }
+  body.phone #menu { display: block !important; }
+
+  /* Virtual Keyboard for Mobile / Touch screens */
+  .virtual-kb {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 460px;
+    padding: 6px 6px;
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 45;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+  .virtual-kb.show {
+    display: flex;
+  }
+  .kb-row {
+    display: flex;
+    justify-content: center;
+    gap: 4.5px;
+    width: 100%;
+  }
+  .kb-key {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #1f2329;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 17px;
+    border: 2px solid #1f2329;
+    box-shadow: 1.5px 2px 0px #1f2329;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 0.04s, background-color 0.04s, box-shadow 0.04s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .kb-key:active {
+    transform: translate(1px, 1.5px);
+    box-shadow: 0px 0px 0px #1f2329;
+    background: var(--butter);
+  }
+  .kb-key.kb-special {
+    flex: 1.35;
+    font-size: 13px;
+    background: #f4f4f5;
+  }
 
   .stars { display: flex; gap: 18px; margin: 22px 0 6px; }
   .stars > div { display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
@@ -277,6 +330,57 @@
     <a class="exit" href="javascript:void(0)" onclick="if(window.parent&&window.parent.closeGame){window.parent.closeGame();}else{window.top.location.href='/';}return false;"><svg style="width:13px;height:13px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg><span>Trang chủ</span></a>
   </div>
 </div>
+
+<div id="virtual-kb" class="virtual-kb">
+  <div class="kb-row" id="kb-row-num" style="display:none;">
+    <button type="button" class="kb-key" data-k="1">1</button>
+    <button type="button" class="kb-key" data-k="2">2</button>
+    <button type="button" class="kb-key" data-k="3">3</button>
+    <button type="button" class="kb-key" data-k="4">4</button>
+    <button type="button" class="kb-key" data-k="5">5</button>
+    <button type="button" class="kb-key" data-k="6">6</button>
+    <button type="button" class="kb-key" data-k="7">7</button>
+    <button type="button" class="kb-key" data-k="8">8</button>
+    <button type="button" class="kb-key" data-k="9">9</button>
+    <button type="button" class="kb-key" data-k="0">0</button>
+  </div>
+  <div class="kb-row">
+    <button type="button" class="kb-key" data-k="q">Q</button>
+    <button type="button" class="kb-key" data-k="w">W</button>
+    <button type="button" class="kb-key" data-k="e">E</button>
+    <button type="button" class="kb-key" data-k="r">R</button>
+    <button type="button" class="kb-key" data-k="t">T</button>
+    <button type="button" class="kb-key" data-k="y">Y</button>
+    <button type="button" class="kb-key" data-k="u">U</button>
+    <button type="button" class="kb-key" data-k="i">I</button>
+    <button type="button" class="kb-key" data-k="o">O</button>
+    <button type="button" class="kb-key" data-k="p">P</button>
+  </div>
+  <div class="kb-row">
+    <button type="button" class="kb-key" data-k="a">A</button>
+    <button type="button" class="kb-key" data-k="s">S</button>
+    <button type="button" class="kb-key" data-k="d">D</button>
+    <button type="button" class="kb-key" data-k="f">F</button>
+    <button type="button" class="kb-key" data-k="g">G</button>
+    <button type="button" class="kb-key" data-k="h">H</button>
+    <button type="button" class="kb-key" data-k="j">J</button>
+    <button type="button" class="kb-key" data-k="k">K</button>
+    <button type="button" class="kb-key" data-k="l">L</button>
+  </div>
+  <div class="kb-row">
+    <button type="button" class="kb-key kb-special" id="kb-num-toggle">123</button>
+    <button type="button" class="kb-key" data-k="z">Z</button>
+    <button type="button" class="kb-key" data-k="x">X</button>
+    <button type="button" class="kb-key" data-k="c">C</button>
+    <button type="button" class="kb-key" data-k="v">V</button>
+    <button type="button" class="kb-key" data-k="b">B</button>
+    <button type="button" class="kb-key" data-k="n">N</button>
+    <button type="button" class="kb-key" data-k="m">M</button>
+    <button type="button" class="kb-key kb-special" id="kb-native-toggle" title="Bàn phím iOS">⌨️</button>
+  </div>
+</div>
+<input id="mobileKeyInput" type="text" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none;width:1px;height:1px;">
+
 <div id="toast"></div>
 
 <script>
@@ -296,8 +400,8 @@ const BOT = Q.has('bot');
 const TEST = BOT || Q.has('still') || Q.has('autoplay');
 window.__bot = BOT;
 window.__freeze = Q.has('still');
-const PHONE = !TEST && matchMedia('(hover: none) and (pointer: coarse)').matches;
-document.body.classList.toggle('phone', PHONE);
+const PHONE = false;
+document.body.classList.toggle('phone', false);
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -336,7 +440,8 @@ function fitView() {
   ch = innerHeight;
   const narrow = cw < ch;
   const top = narrow ? 150 : 120;
-  const bottom = 56;
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || innerWidth < 768;
+  const bottom = (isTouch && mode === 'play') ? 210 : 56;
   const vw = VIEW.x1 - VIEW.x0, vh = VIEW.y1 - VIEW.y0;
   const fitH = (ch - top - bottom) / vh;
   const s = narrow ? Math.min(fitH, cw / VIEW.minW, 1.6) : Math.min((cw - 80) / vw, fitH, 1.6);
@@ -1848,6 +1953,11 @@ function startRun(i) {
   $('hint').classList.toggle('hidden', life.seenHint || BOT);
   popup(gauntlet ? 'Endless' : `Level ${i + 1}`, gauntlet ? 'HOW LONG CAN YOU LAST' : b.name.toUpperCase(), true, 0, -175);
   updateHud();
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || innerWidth < 768;
+  if (isTouch) {
+    $('virtual-kb')?.classList.add('show');
+    resize();
+  }
 }
 
 function wpmNow() {
@@ -1866,6 +1976,8 @@ function accuracy() {
 
 function finish(cleared) {
   mode = 'over';
+  $('virtual-kb')?.classList.remove('show');
+  resize();
   target = null;
   for (const g of liveGoons()) {
     g.state = 'idle';
@@ -1969,6 +2081,8 @@ function primaryAction() {
 
 function toMenu() {
   mode = 'menu';
+  $('virtual-kb')?.classList.remove('show');
+  resize();
   goons = [];
   hero.state = 'ok';
   hero.body = newBody(P.guard);
@@ -2047,15 +2161,65 @@ $('levels').addEventListener('click', (e) => {
   choose(+b.dataset.i);
 });
 function playSelected() {
-  if (PHONE) {
-    return;
-  }
   startRun(sel === BOUTS.length ? -1 : sel);
 }
 $('playBtn').addEventListener('click', playSelected);
 $('againBtn').addEventListener('click', primaryAction);
 $('menuBtn').addEventListener('click', toMenu);
 $('shareBtn').addEventListener('click', () => share(lastResult));
+
+// Setup Virtual Keyboard for Touch / Mobile
+document.querySelectorAll('#virtual-kb .kb-key[data-k]').forEach((keyBtn) => {
+  const triggerKey = (e) => {
+    e.preventDefault();
+    audio();
+    const ch = keyBtn.getAttribute('data-k');
+    if (ch) {
+      if (paused) {
+        paused = false;
+        $('hint')?.classList.add('hidden');
+      }
+      typeChar(ch.toLowerCase());
+    }
+  };
+  keyBtn.addEventListener('pointerdown', triggerKey);
+});
+
+$('kb-num-toggle')?.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  const row = $('kb-row-num');
+  if (row) {
+    const isHidden = row.style.display === 'none';
+    row.style.display = isHidden ? 'flex' : 'none';
+    $('kb-num-toggle').textContent = isHidden ? 'ABC' : '123';
+    resize();
+  }
+});
+
+$('kb-native-toggle')?.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  const input = $('mobileKeyInput');
+  if (input) {
+    input.focus();
+  }
+});
+
+$('mobileKeyInput')?.addEventListener('input', (e) => {
+  if (e.data) {
+    for (const ch of e.data) {
+      typeChar(ch.toLowerCase());
+    }
+  }
+  $('mobileKeyInput').value = '';
+});
+
+// Also tapping canvas can resume pause or focus mobile input
+cv.addEventListener('pointerdown', (e) => {
+  if (paused) {
+    paused = false;
+    $('hint')?.classList.add('hidden');
+  }
+});
 
 // ── Input ──────────────────────────────────────────────────────────────────
 

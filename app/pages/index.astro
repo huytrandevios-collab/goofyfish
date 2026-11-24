@@ -20,7 +20,7 @@ const jsonLd = {
 ---
 
 <Base title={`${SITE.name} · ${SITE.tagline}`} description={SITE.description} path='/' jsonLd={jsonLd}>
-  <!-- Top App Bar: Sticker Man War & Notification Bell -->
+  <!-- Top App Bar: Stickman War & Notification Bell -->
   <nav class='mx-auto max-w-[1120px] px-4 pt-[calc(env(safe-area-inset-top,0px)+0.2rem)] pb-1.5 flex items-center justify-between sm:px-8'>
     <div class='flex items-center gap-2.5'>
       <!-- Cute Stickman Logo Icon -->
@@ -33,7 +33,7 @@ const jsonLd = {
       </div>
       <div>
         <h1 class='font-display text-[20px] font-bold tracking-tight text-stone-900 sm:text-[23px] leading-none'>
-          Sticker Man War
+          Stickman War
         </h1>
         <p class='text-[11px] font-medium text-amber-900/80 leading-tight mt-0.5'>
           Arcade Battle Edition
@@ -93,7 +93,7 @@ const jsonLd = {
 
     <footer class='mt-3 pb-1 flex flex-col items-center text-center'>
       <p class='text-[12px] font-medium leading-tight text-stone-600'>Copyright © Huy Tran</p>
-      <p class='mt-0.5 text-[10.5px] leading-tight text-stone-400'>Sticker Man Arcade · All rights reserved</p>
+      <p class='mt-0.5 text-[10.5px] leading-tight text-stone-400'>Stickman War Arcade · All rights reserved</p>
     </footer>
   </main>
 
@@ -257,8 +257,8 @@ const jsonLd = {
           try {
             await navigator.share({
               files: [currentFile],
-              title: 'Sticker Man War',
-              text: 'Kỷ lục Sticker Man War của tôi! Thử đánh bại tôi xem nào 🎮'
+              title: 'Stickman War',
+              text: 'Kỷ lục Stickman War của tôi! Thử đánh bại tôi xem nào 🎮'
             });
           } catch (e) {
             console.log('Share dismissed or failed', e);
@@ -266,8 +266,8 @@ const jsonLd = {
         } else if (navigator.share) {
           try {
             await navigator.share({
-              title: 'Sticker Man War',
-              text: 'Kỷ lục Sticker Man War của tôi! 🎮',
+              title: 'Stickman War',
+              text: 'Kỷ lục Stickman War của tôi! 🎮',
               url: window.location.href
             });
           } catch (e) {}
@@ -427,7 +427,7 @@ const jsonLd = {
       // Notification Bell Toast Click Handler
       const notifBellBtn = document.getElementById('notif-bell-btn');
       notifBellBtn?.addEventListener('click', () => {
-        alert('🔔 Sticker Man War: Chào mừng bạn! Toàn bộ 20 mini-game đã sẵn sàng chơi mượt mà 100% không cần mạng.');
+        alert('🔔 Stickman War: Chào mừng bạn! Toàn bộ 20 mini-game đã sẵn sàng chơi mượt mà 100% không cần mạng.');
       });
     }
   </script>
