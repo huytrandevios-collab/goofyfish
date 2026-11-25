@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import GameKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,8 +8,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Authenticate Game Center on launch
+        setupGameCenter()
         return true
+    }
+
+    func setupGameCenter() {
+        let player = GKLocalPlayer.local
+        player.authenticateHandler = { [weak self] viewController, error in
+            if let vc = viewController {
+                DispatchQueue.main.async {
+                    self?.window?.rootViewController?.present(vc, animated: true, completion: nil)
+                }
+            } else if player.isAuthenticated {
+                print("[GameCenter] Authenticated as: \(player.alias)")
+                DispatchQueue.main.async {
+                    if #available(iOS 14.0, *) {
+                        GKAccessPoint.shared.location = .topTrailing
+                        GKAccessPoint.shared.showHighlights = true
+                        GKAccessPoint.shared.isActive = true
+                    }
+                }
+            } else if let error = error {
+                print("[GameCenter] Authentication error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
