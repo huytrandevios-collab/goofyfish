@@ -42,10 +42,16 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControll
     }
     
     @objc func showLeaderboard(_ call: CAPPluginCall) {
+        let leaderboardID = call.getString("leaderboardID")
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if #available(iOS 14.0, *) {
-                let gcViewController = GKGameCenterViewController(state: .leaderboards)
+                let gcViewController: GKGameCenterViewController
+                if let leaderboardID = leaderboardID, !leaderboardID.isEmpty {
+                    gcViewController = GKGameCenterViewController(leaderboardID: leaderboardID, playerScope: .global, timeScope: .allTime)
+                } else {
+                    gcViewController = GKGameCenterViewController(state: .leaderboards)
+                }
                 gcViewController.gameCenterDelegate = self
                 self.bridge?.viewController?.present(gcViewController, animated: true) {
                     call.resolve(["success": true])
@@ -53,6 +59,9 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControll
             } else {
                 let gcViewController = GKGameCenterViewController()
                 gcViewController.gameCenterDelegate = self
+                if let leaderboardID = leaderboardID, !leaderboardID.isEmpty {
+                    gcViewController.leaderboardIdentifier = leaderboardID
+                }
                 gcViewController.viewState = .leaderboards
                 self.bridge?.viewController?.present(gcViewController, animated: true) {
                     call.resolve(["success": true])

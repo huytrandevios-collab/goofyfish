@@ -104,36 +104,100 @@ const jsonLd = {
         <StickmanHero />
       </header>
 
-      <!-- Games Section Header -->
-      <div class='col-span-2 flex items-center justify-between px-1 pt-1.5 pb-0.5'>
-        <h2 class='font-display text-[15.5px] font-bold text-stone-900 tracking-tight flex items-center gap-1.5'>
-          <span>🎮</span>
-          <span>Chọn Trò Chơi</span>
-        </h2>
-        <span class='text-[11px] font-bold text-amber-950 bg-amber-100/90 border border-amber-900/20 px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#1f2329]'>
-          20 Thử Thách
-        </span>
+      <!-- Games Section Header & Classification Bar -->
+      <div class='col-span-2 flex flex-col gap-2 px-1 pt-1.5 pb-0.5'>
+        <div class='flex items-center justify-between'>
+          <h2 class='font-display text-[15.5px] font-bold text-stone-900 tracking-tight flex items-center gap-1.5'>
+            <span>🎮</span>
+            <span>Chọn Trò Chơi</span>
+          </h2>
+          <span class='text-[11px] font-bold text-amber-950 bg-amber-100/90 border border-amber-900/20 px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#1f2329]'>
+            20 Thử Thách
+          </span>
+        </div>
+
+        <!-- Filter / Classification Tabs: Chơi nhiều nhất, Điểm cao, Tất cả -->
+        <div class='flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar'>
+          <button
+            id='tab-sort-most-played'
+            type='button'
+            class='sort-tab-btn flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold border-2 border-stone-800 bg-[#fde68a] text-stone-900 shadow-[1.5px_2px_0px_#1f2329] active:translate-y-[1px] transition-all'
+            style='border-radius: 9px 11px 9px 10px;'
+          >
+            <span>🔥</span>
+            <span>Chơi Nhiều Nhất</span>
+          </button>
+          <button
+            id='tab-sort-top-score'
+            type='button'
+            class='sort-tab-btn flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold border-2 border-stone-800 bg-white text-stone-700 hover:bg-amber-50 shadow-[1.5px_2px_0px_#1f2329] active:translate-y-[1px] transition-all'
+            style='border-radius: 10px 9px 11px 9px;'
+          >
+            <span>🏆</span>
+            <span>Điểm Kỷ Lục</span>
+          </button>
+          <button
+            id='tab-sort-default'
+            type='button'
+            class='sort-tab-btn flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold border-2 border-stone-800 bg-white text-stone-700 hover:bg-amber-50 shadow-[1.5px_2px_0px_#1f2329] active:translate-y-[1px] transition-all'
+            style='border-radius: 9px 11px 10px 9px;'
+          >
+            <span>⚡</span>
+            <span>Tất Cả Game</span>
+          </button>
+        </div>
       </div>
 
+      <div id='games-grid-container' class='col-span-2 contents'>
       {
-        games.map((game) => (
+        games.map((game, idx) => (
           <a
             href={`/${game.slug}`}
             data-game-slug={game.slug}
             data-game-name={game.name}
-            class='group relative flex flex-col rounded-2xl border-2 border-stone-800/90 bg-white p-2 transition-all hover:-translate-y-0.5 active:translate-x-[1px] active:translate-y-[1px] shadow-[3px_3.5px_0px_#1f2329]'
+            data-initial-order={idx}
+            class='game-card group relative flex flex-col justify-between rounded-2xl border-2 border-stone-800/90 bg-white p-2 transition-all hover:-translate-y-0.5 active:translate-x-[1px] active:translate-y-[1px] shadow-[3px_3.5px_0px_#1f2329]'
             style='border-radius: 18px 22px 19px 23px / 22px 18px 23px 19px;'
           >
-            <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-neutral-50/60 border border-stone-200/80'>
-              <img src={`/thumbs/${game.slug}.webp`} alt='' loading='lazy' class='h-[78%] w-[84%] object-contain' />
+            <!-- Hot Badge / Rank Badges at top corners -->
+            <div class='game-hot-badge absolute top-1.5 left-1.5 z-10 items-center gap-0.5 rounded-md border border-stone-900 bg-rose-500 px-1.5 py-0.5 text-[9.5px] font-black text-white shadow-xs select-none' style='display: none;'>
+              <span class='hot-badge-text'>🔥 Top 1</span>
             </div>
-            <div class='px-2 pt-3 pb-2'>
-              <h2 class='font-display text-[17px] leading-tight sm:text-[18px] text-stone-900'>{game.name}</h2>
-              <p class='mt-1 text-[13px] leading-snug text-neutral-600'>{game.tagline}</p>
+            <div class='game-rank-badge absolute top-1.5 right-1.5 z-10 inline-flex items-center gap-0.5 rounded-md border border-stone-800/30 bg-amber-100/95 px-1.5 py-0.5 text-[9.5px] font-bold text-amber-950 backdrop-blur-xs select-none shadow-xs'>
+              <span class='rank-badge-icon'>🥉</span>
+              <span class='rank-badge-text'>Đồng</span>
+            </div>
+
+            <div>
+              <div class='relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-neutral-50/60 border border-stone-200/80'>
+                <img src={`/thumbs/${game.slug}.webp`} alt='' loading='lazy' class='h-[78%] w-[84%] object-contain' />
+              </div>
+              <div class='px-1 pt-2 pb-1'>
+                <h2 class='font-display text-[15.5px] leading-tight sm:text-[17px] text-stone-900 font-bold'>{game.name}</h2>
+                <p class='mt-0.5 text-[11.5px] leading-snug text-neutral-600 line-clamp-2'>{game.tagline}</p>
+              </div>
+            </div>
+
+            <!-- Card Bottom: Play count & Rank Button -->
+            <div class='mt-2 pt-1.5 border-t border-stone-800/10 flex items-center justify-between text-[10.5px] text-stone-500 font-semibold'>
+              <span class='game-plays-counter flex items-center gap-1'>
+                <span>🕹️</span>
+                <span class='plays-count-num font-bold text-stone-800'>0</span> lượt
+              </span>
+              <button
+                type='button'
+                class='game-quick-rank-btn flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-stone-900 font-bold border border-stone-300 active:scale-95 transition-transform'
+                data-rank-slug={game.slug}
+                data-rank-name={game.name}
+              >
+                <span>🏆</span>
+                <span>Rank</span>
+              </button>
             </div>
           </a>
         ))
       }
+      </div>
     </section>
 
     <footer class='mt-3 pb-1 flex flex-col items-center text-center'>
@@ -456,15 +520,15 @@ const jsonLd = {
     </div>
   </div>
 
-  <!-- ================= 3. GAME CENTER RANK MODAL ================= -->
+  <!-- ================= 3. GAME CENTER & PER-GAME RANK MODAL ================= -->
   <div
     id='rank-modal'
     class='fixed inset-0 z-[100000] hidden items-center justify-center p-3 bg-black/80 backdrop-blur-md transition-opacity select-none'
     style='display: none; position: fixed; inset: 0; z-index: 100000;'
   >
-    <div class='relative max-w-sm w-full flex flex-col rounded-2xl bg-[#f7f7f5] border-2 border-stone-800 shadow-[4px_5px_0px_#1f2329] p-4 animate-in fade-in zoom-in-95 duration-200' style='border-radius: 20px 24px 22px 26px / 24px 20px 26px 22px;'>
+    <div class='relative max-w-sm w-full max-h-[90vh] flex flex-col rounded-2xl bg-[#f7f7f5] border-2 border-stone-800 shadow-[4px_5px_0px_#1f2329] p-3.5 animate-in fade-in zoom-in-95 duration-200 overflow-hidden' style='border-radius: 20px 24px 22px 26px / 24px 20px 26px 22px;'>
       <!-- Header -->
-      <div class='flex items-center justify-between pb-3 border-b-2 border-stone-800/10'>
+      <div class='flex items-center justify-between pb-2.5 border-b-2 border-stone-800/10'>
         <div class='flex items-center gap-2'>
           <div class='flex size-8 items-center justify-center rounded-xl bg-[#fef9c3] border border-stone-800/30 text-amber-700 shadow-xs'>
             <svg viewBox="0 0 24 24" class="size-4.5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
@@ -477,8 +541,8 @@ const jsonLd = {
             </svg>
           </div>
           <div>
-            <h3 class='font-display text-[16px] font-bold text-stone-900 leading-tight'>Bảng Xếp Hạng & Rank</h3>
-            <p class='text-[10.5px] font-medium text-amber-900/80 leading-tight'>Apple Game Center Leaderboard</p>
+            <h3 class='font-display text-[15.5px] font-bold text-stone-900 leading-tight'>Bảng Xếp Hạng & Rank</h3>
+            <p class='text-[10px] font-medium text-amber-900/80 leading-tight'>Apple Game Center Leaderboard</p>
           </div>
         </div>
         <button id='rank-close-btn' type='button' class='size-7 flex items-center justify-center rounded-full bg-stone-200/80 hover:bg-stone-300 text-stone-700 active:scale-90 font-bold text-sm'>
@@ -486,75 +550,216 @@ const jsonLd = {
         </button>
       </div>
 
-      <!-- Player Rank Tier Card -->
-      <div class='mt-3 flex flex-col gap-2 p-3 rounded-xl bg-gradient-to-r from-amber-100 via-butter to-amber-50 border-2 border-stone-800 shadow-[2.5px_3px_0px_#1f2329]' style='border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px;'>
-        <div class='flex items-center justify-between'>
-          <div class='flex items-center gap-2'>
-            <div id='rank-player-badge' class='flex size-10 items-center justify-center rounded-full bg-white border-2 border-stone-800 text-xl shadow-xs'>
-              🥈
-            </div>
-            <div>
-              <div id='rank-player-title' class='text-[14px] font-bold text-stone-900 leading-tight'>Chiến Binh Bạc</div>
-              <div id='rank-player-alias' class='text-[11px] font-semibold text-amber-900/80 leading-tight'>Player: Stickman Fighter</div>
-            </div>
-          </div>
-          <div class='text-right'>
-            <div class='text-[9.5px] font-bold text-stone-500 uppercase tracking-wider'>Điểm Tích Lũy</div>
-            <div id='rank-total-points' class='text-[18px] font-black text-stone-900 leading-none'>180 <span class='text-[10px] font-bold text-amber-800'>WP</span></div>
-          </div>
-        </div>
-
-        <!-- Progress to Next Tier -->
-        <div class='mt-1'>
-          <div class='flex justify-between text-[10px] font-bold text-stone-600 mb-1'>
-            <span id='rank-curr-tier-label'>Bạc (100 WP)</span>
-            <span id='rank-next-tier-label'>Mục tiêu: Vàng (250 WP)</span>
-          </div>
-          <div class='h-2.5 w-full bg-white/80 rounded-full border border-stone-800/30 overflow-hidden p-0.5'>
-            <div id='rank-progress-bar' class='h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-500' style='width: 53%;'></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Apple Game Center Native Trigger Button -->
-      <div class='mt-3'>
+      <!-- 3 Navigation Tabs: 🎮 Rank Minigame | 🔥 Chơi Nhiều Nhất | 🌟 Tổng War Points -->
+      <div class='flex items-center gap-1 mt-2.5 p-1 bg-stone-200/70 rounded-xl border border-stone-300/80'>
         <button
-          id='open-apple-gc-native-btn'
+          id='tab-btn-minigame-rank'
           type='button'
-          class='w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-stone-900 text-white font-display text-[13.5px] font-bold border-2 border-stone-900 shadow-[2.5px_3px_0px_rgba(0,0,0,0.25)] hover:bg-stone-800 active:translate-x-[1px] active:translate-y-[1px]'
-          style='border-radius: 12px 14px 11px 13px / 14px 12px 13px 11px;'
+          class='rank-nav-tab flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-[11px] bg-white text-stone-900 shadow-xs border border-stone-800/20 active:translate-y-[0.5px] transition-all'
         >
-          <!-- Apple Logo SVG -->
-          <svg viewBox="0 0 170 170" class="size-4.5 fill-current">
-            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.58-7.71-11.65-14.01-6.19-9.56-11.12-20.91-14.79-34.05-3.67-13.14-5.51-25.04-5.51-35.69 0-14.12 3.48-26.04 10.45-35.75 6.96-9.72 15.68-14.7 26.15-14.96 5.88 0 11.96 1.63 18.25 4.89 6.29 3.26 10.33 4.97 12.11 5.12 2.39-.33 6.96-2.18 13.7-5.56 6.74-3.37 12.83-4.94 18.25-4.72 11.96.65 21.64 5.33 29.04 14.03-10.44 6.3-15.55 15.11-15.34 26.42.22 9.13 3.7 16.74 10.45 22.83 6.74 6.09 14.57 9.57 23.49 10.44-2.39 7.39-5.44 14.78-9.14 22.18zM119.22 31.84c0-7.17 2.61-13.91 7.83-20.22 5.22-6.3 11.52-10.33 18.91-12.07.22 1.3.33 2.5.33 3.59 0 7.17-2.72 14.02-8.15 20.55-5.43 6.52-11.85 10.43-19.25 11.74-.22-1.09-.33-2.39-.33-3.59z"/>
-          </svg>
-          <span>Mở Apple Game Center</span>
+          🎮 Rank Minigame
+        </button>
+        <button
+          id='tab-btn-most-played'
+          type='button'
+          class='rank-nav-tab flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-[11px] text-stone-600 hover:text-stone-900 active:translate-y-[0.5px] transition-all'
+        >
+          🔥 Chơi Nhiều
+        </button>
+        <button
+          id='tab-btn-global-rank'
+          type='button'
+          class='rank-nav-tab flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-[11px] text-stone-600 hover:text-stone-900 active:translate-y-[0.5px] transition-all'
+        >
+          🌟 Tổng WP
         </button>
       </div>
 
-      <!-- Rank Tier Reference -->
-      <div class='mt-3'>
-        <div class='text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1.5 flex items-center justify-between'>
-          <span>Cấp Bậc Rank Stickman</span>
-          <span class='text-[10px] text-stone-500 font-normal'>Cập nhật realtime</span>
+      <!-- Modal Body (Scrollable) -->
+      <div class='mt-2.5 flex-1 overflow-y-auto pr-0.5 space-y-3' style='max-height: calc(85vh - 120px);'>
+        
+        <!-- ================= TAB 1: RANK TỪNG MINIGAME ================= -->
+        <div id='rank-view-minigame' class='flex flex-col gap-2.5'>
+          <!-- Horizontal Minigame Picker Slider -->
+          <div>
+            <div class='flex items-center justify-between text-[11px] font-bold text-stone-700 mb-1 px-0.5'>
+              <span>Chọn Minigame:</span>
+              <span id='picker-game-counter' class='text-[10px] text-amber-800 font-semibold'>20 Minigames</span>
+            </div>
+            <div id='minigame-picker-scroll' class='flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar'>
+              {
+                games.map((g, i) => (
+                  <button
+                    type='button'
+                    data-picker-slug={g.slug}
+                    data-picker-name={g.name}
+                    class={`minigame-picker-btn shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-xl border border-stone-800 text-[11px] font-bold shadow-xs active:scale-95 transition-all ${
+                      i === 0 ? 'bg-amber-300 text-stone-950 border-stone-900' : 'bg-white text-stone-700'
+                    }`}
+                  >
+                    <img src={`/thumbs/${g.slug}.webp`} alt='' class='size-4 rounded object-cover' />
+                    <span>{g.name}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Selected Game Rank Card -->
+          <div class='flex flex-col gap-2 p-3 rounded-xl bg-gradient-to-r from-amber-100 via-butter to-amber-50 border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px;'>
+            <div class='flex items-center justify-between'>
+              <div class='flex items-center gap-2'>
+                <div id='selected-game-badge' class='flex size-10 items-center justify-center rounded-full bg-white border-2 border-stone-800 text-xl shadow-xs'>
+                  🥇
+                </div>
+                <div>
+                  <div id='selected-game-title' class='text-[14px] font-bold text-stone-900 leading-tight'>Goon Rush</div>
+                  <div id='selected-game-rank-name' class='text-[11px] font-bold text-amber-900 leading-tight'>Hạng Vàng · Đấu Sĩ</div>
+                </div>
+              </div>
+              <div class='text-right'>
+                <div class='text-[9px] font-bold text-stone-500 uppercase tracking-wider'>Kỷ Lục Của Bạn</div>
+                <div id='selected-game-score' class='text-[17px] font-black text-stone-900 leading-none'>45 <span class='text-[10px] font-bold text-amber-800'>pts</span></div>
+              </div>
+            </div>
+
+            <!-- Game Rank Progress Bar -->
+            <div class='mt-1'>
+              <div class='flex justify-between text-[10px] font-bold text-stone-600 mb-0.5'>
+                <span id='selected-game-curr-tier-lbl'>Vàng (35 pts)</span>
+                <span id='selected-game-next-tier-lbl'>Mục tiêu: Kim Cương (65 pts)</span>
+              </div>
+              <div class='h-2 w-full bg-white/80 rounded-full border border-stone-800/30 overflow-hidden p-0.5'>
+                <div id='selected-game-progress-bar' class='h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-500' style='width: 65%;'></div>
+              </div>
+            </div>
+
+            <!-- Stats Mini Bar -->
+            <div class='flex items-center justify-between pt-1 border-t border-amber-900/10 text-[10.5px] font-semibold text-stone-600'>
+              <span id='selected-game-plays-stat'>🕹️ Lượt chơi: 15 lần</span>
+              <span id='selected-game-gc-id' class='text-[9.5px] text-stone-500 font-mono'>ID: stickman_war_punching</span>
+            </div>
+          </div>
+
+          <!-- Top 5 Leaderboard Table for this game -->
+          <div class='rounded-xl bg-white border border-stone-800/20 p-2.5 shadow-xs'>
+            <div class='flex items-center justify-between pb-1.5 border-b border-stone-200 text-[11px] font-bold text-stone-800'>
+              <span>Top Cao Thủ <span id='leaderboard-game-name'>Goon Rush</span></span>
+              <span class='text-[9.5px] text-stone-500 font-normal'>Apple Game Center</span>
+            </div>
+            <div id='selected-game-top-list' class='divide-y divide-stone-100 text-[11px]'>
+              <!-- Dynamically rendered top 5 players -->
+            </div>
+          </div>
+
+          <!-- Action Buttons: Open Game Center & Play Now -->
+          <div class='flex gap-2 pt-0.5'>
+            <button
+              id='open-selected-game-gc-btn'
+              type='button'
+              class='flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-stone-900 text-white font-display text-[12.5px] font-bold border-2 border-stone-900 shadow-[2px_2.5px_0px_rgba(0,0,0,0.25)] hover:bg-stone-800 active:translate-y-[1px]'
+              style='border-radius: 11px 13px 10px 12px;'
+            >
+              <svg viewBox="0 0 170 170" class="size-4 fill-current">
+                <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.58-7.71-11.65-14.01-6.19-9.56-11.12-20.91-14.79-34.05-3.67-13.14-5.51-25.04-5.51-35.69 0-14.12 3.48-26.04 10.45-35.75 6.96-9.72 15.68-14.7 26.15-14.96 5.88 0 11.96 1.63 18.25 4.89 6.29 3.26 10.33 4.97 12.11 5.12 2.39-.33 6.96-2.18 13.7-5.56 6.74-3.37 12.83-4.94 18.25-4.72 11.96.65 21.64 5.33 29.04 14.03-10.44 6.3-15.55 15.11-15.34 26.42.22 9.13 3.7 16.74 10.45 22.83 6.74 6.09 14.57 9.57 23.49 10.44-2.39 7.39-5.44 14.78-9.14 22.18zM119.22 31.84c0-7.17 2.61-13.91 7.83-20.22 5.22-6.3 11.52-10.33 18.91-12.07.22 1.3.33 2.5.33 3.59 0 7.17-2.72 14.02-8.15 20.55-5.43 6.52-11.85 10.43-19.25 11.74-.22-1.09-.33-2.39-.33-3.59z"/>
+              </svg>
+              <span>Xem Game Center</span>
+            </button>
+            <button
+              id='play-selected-game-direct-btn'
+              type='button'
+              class='flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-amber-400 text-stone-900 font-display text-[12.5px] font-bold border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329] hover:bg-amber-300 active:translate-y-[1px]'
+              style='border-radius: 12px 10px 13px 11px;'
+            >
+              <span>⚔️</span>
+              <span>Chiến Game Này</span>
+            </button>
+          </div>
         </div>
-        <div class='grid grid-cols-2 gap-1.5 text-[11px] font-semibold text-stone-800'>
-          <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
-            <span>🥉</span> <span>Đồng: 0 - 99 WP</span>
+
+        <!-- ================= TAB 2: XẾP LOẠI GAME CHƠI NHIỀU NHẤT ================= -->
+        <div id='rank-view-most-played' class='hidden flex-col gap-2'>
+          <div class='flex items-center justify-between text-[11px] font-bold text-stone-700 px-0.5'>
+            <span>Top 20 Game Được Chơi Nhiều Nhất</span>
+            <span class='text-[10px] text-rose-600 font-bold'>🔥 Cập nhật realtime</span>
           </div>
-          <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
-            <span>🥈</span> <span>Bạc: 100 - 249 WP</span>
-          </div>
-          <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
-            <span>🥇</span> <span>Vàng: 250 - 499 WP</span>
-          </div>
-          <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
-            <span>💎</span> <span>Kim Cương: 500+ WP</span>
-          </div>
-          <div class='col-span-2 flex items-center justify-center gap-1.5 p-1.5 rounded-lg bg-amber-100 border border-amber-300 font-bold text-amber-950'>
-            <span>👑</span> <span>Chiến Thần Stickman: > 1,000 WP</span>
+
+          <div id='most-played-list-container' class='flex flex-col gap-1.5'>
+            <!-- Dynamically populated 20 minigames sorted by play count -->
           </div>
         </div>
+
+        <!-- ================= TAB 3: TỔNG WAR POINTS & ĐIỂM TÍCH LŨY ================= -->
+        <div id='rank-view-global' class='hidden flex-col gap-2.5'>
+          <!-- Global Player Rank Tier Card -->
+          <div class='flex flex-col gap-2 p-3 rounded-xl bg-gradient-to-r from-amber-100 via-butter to-amber-50 border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 14px 16px 13px 15px / 15px 13px 16px 14px;'>
+            <div class='flex items-center justify-between'>
+              <div class='flex items-center gap-2'>
+                <div id='rank-player-badge' class='flex size-10 items-center justify-center rounded-full bg-white border-2 border-stone-800 text-xl shadow-xs'>
+                  🥈
+                </div>
+                <div>
+                  <div id='rank-player-title' class='text-[14px] font-bold text-stone-900 leading-tight'>Chiến Binh Bạc</div>
+                  <div id='rank-player-alias' class='text-[11px] font-semibold text-amber-900/80 leading-tight'>Player: Stickman Fighter</div>
+                </div>
+              </div>
+              <div class='text-right'>
+                <div class='text-[9.5px] font-bold text-stone-500 uppercase tracking-wider'>Điểm Tích Lũy</div>
+                <div id='rank-total-points' class='text-[18px] font-black text-stone-900 leading-none'>180 <span class='text-[10px] font-bold text-amber-800'>WP</span></div>
+              </div>
+            </div>
+
+            <!-- Progress to Next Tier -->
+            <div class='mt-1'>
+              <div class='flex justify-between text-[10px] font-bold text-stone-600 mb-1'>
+                <span id='rank-curr-tier-label'>Bạc (100 WP)</span>
+                <span id='rank-next-tier-label'>Mục tiêu: Vàng (250 WP)</span>
+              </div>
+              <div class='h-2.5 w-full bg-white/80 rounded-full border border-stone-800/30 overflow-hidden p-0.5'>
+                <div id='rank-progress-bar' class='h-full bg-gradient-to-r from-amber-400 to-amber-500 rounded-full transition-all duration-500' style='width: 53%;'></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Apple Game Center Native Trigger Button -->
+          <button
+            id='open-apple-gc-native-btn'
+            type='button'
+            class='w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-stone-900 text-white font-display text-[13px] font-bold border-2 border-stone-900 shadow-[2px_2.5px_0px_rgba(0,0,0,0.25)] hover:bg-stone-800 active:translate-x-[1px] active:translate-y-[1px]'
+            style='border-radius: 12px 14px 11px 13px / 14px 12px 13px 11px;'
+          >
+            <svg viewBox="0 0 170 170" class="size-4.5 fill-current">
+              <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.58-7.71-11.65-14.01-6.19-9.56-11.12-20.91-14.79-34.05-3.67-13.14-5.51-25.04-5.51-35.69 0-14.12 3.48-26.04 10.45-35.75 6.96-9.72 15.68-14.7 26.15-14.96 5.88 0 11.96 1.63 18.25 4.89 6.29 3.26 10.33 4.97 12.11 5.12 2.39-.33 6.96-2.18 13.7-5.56 6.74-3.37 12.83-4.94 18.25-4.72 11.96.65 21.64 5.33 29.04 14.03-10.44 6.3-15.55 15.11-15.34 26.42.22 9.13 3.7 16.74 10.45 22.83 6.74 6.09 14.57 9.57 23.49 10.44-2.39 7.39-5.44 14.78-9.14 22.18zM119.22 31.84c0-7.17 2.61-13.91 7.83-20.22 5.22-6.3 11.52-10.33 18.91-12.07.22 1.3.33 2.5.33 3.59 0 7.17-2.72 14.02-8.15 20.55-5.43 6.52-11.85 10.43-19.25 11.74-.22-1.09-.33-2.39-.33-3.59z"/>
+            </svg>
+            <span>Mở Bảng Tổng Game Center</span>
+          </button>
+
+          <!-- Rank Tier Reference -->
+          <div>
+            <div class='text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1 flex items-center justify-between'>
+              <span>Cấp Bậc Rank Toàn Bộ App</span>
+              <span class='text-[9.5px] text-stone-500 font-normal'>Realtime</span>
+            </div>
+            <div class='grid grid-cols-2 gap-1.5 text-[10.5px] font-semibold text-stone-800'>
+              <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
+                <span>🥉</span> <span>Đồng: 0 - 99 WP</span>
+              </div>
+              <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
+                <span>🥈</span> <span>Bạc: 100 - 249 WP</span>
+              </div>
+              <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
+                <span>🥇</span> <span>Vàng: 250 - 499 WP</span>
+              </div>
+              <div class='flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-stone-200'>
+                <span>💎</span> <span>Kim Cương: 500+ WP</span>
+              </div>
+              <div class='col-span-2 flex items-center justify-center gap-1.5 p-1.5 rounded-lg bg-amber-100 border border-amber-300 font-bold text-amber-950'>
+                <span>👑</span> <span>Chiến Thần Stickman: > 1,000 WP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -574,15 +779,6 @@ const jsonLd = {
 
       let currentBlobUrl = null;
       let currentFile = null;
-
-      function closeGame() {
-        if (!modal || !frame) return;
-        frame.src = 'about:blank';
-        modal.style.display = 'none';
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-        closeScorecard();
-      }
 
       function openScorecard(blobUrl, filename) {
         if (!scorecardModal || !scorecardImg) return;
@@ -665,6 +861,511 @@ const jsonLd = {
         };
       }
 
+      // ==========================================
+      // PER-GAME LEADERBOARDS & PLAY COUNTS SYSTEM
+      // ==========================================
+      const ALL_GAMES_INFO = [
+        { slug: 'punching', name: 'Goon Rush', unit: 'KOs', thresholds: [15, 35, 65, 100] },
+        { slug: 'rolling', name: 'Keep Rolling', unit: 'm', thresholds: [400, 1000, 2500, 4500] },
+        { slug: 'swinging', name: 'Ninja Swing', unit: 'pts', thresholds: [15, 30, 50, 80] },
+        { slug: 'chopping', name: 'Timber', unit: 'pts', thresholds: [25, 55, 95, 150] },
+        { slug: 'stacks', name: 'Crane Drop', unit: 'tầng', thresholds: [12, 25, 45, 75] },
+        { slug: 'skirmish', name: 'Skirmish', unit: 'round', thresholds: [5, 12, 22, 35] },
+        { slug: 'hoops', name: 'Ten Balls', unit: 'pts', thresholds: [15, 28, 42, 60] },
+        { slug: 'typing', name: 'Type Fight', unit: 'wpm', thresholds: [15, 28, 45, 70] },
+        { slug: 'slicing', name: 'Picnic Panic', unit: 'pts', thresholds: [20, 45, 80, 120] },
+        { slug: 'knockdown', name: 'Knockdown', unit: 'cửa', thresholds: [8, 16, 26, 38] },
+        { slug: 'stomping', name: 'Floor Is Spikes', unit: 'pts', thresholds: [18, 35, 60, 95] },
+        { slug: 'crossing', name: 'Hop Across', unit: 'bước', thresholds: [25, 50, 90, 140] },
+        { slug: 'gaps', name: 'Mind the Gap', unit: 'cầu', thresholds: [10, 22, 38, 60] },
+        { slug: 'slowmo', name: 'Slow Mo Hop', unit: 'pts', thresholds: [12, 25, 42, 65] },
+        { slug: 'planks', name: 'Chop Stack', unit: 'tầng', thresholds: [12, 24, 40, 65] },
+        { slug: 'bopping', name: 'Keep It Up', unit: 'bops', thresholds: [15, 30, 55, 85] },
+        { slug: 'glider', name: 'Paper Glider', unit: 'phòng', thresholds: [8, 18, 32, 50] },
+        { slug: 'stones', name: 'Stepping Stones', unit: 'đá', thresholds: [14, 28, 48, 75] },
+        { slug: 'mirror', name: 'Mirror', unit: 'dáng', thresholds: [10, 20, 35, 55] },
+        { slug: 'selves', name: 'Past Selves', unit: 'màn', thresholds: [6, 12, 18, 24] }
+      ];
+
+      const DEFAULT_PLAY_COUNTS = {
+        punching: 1840,
+        rolling: 1520,
+        swinging: 1350,
+        chopping: 1180,
+        stacks: 990,
+        skirmish: 910,
+        hoops: 860,
+        typing: 810,
+        slicing: 740,
+        knockdown: 680,
+        stomping: 620,
+        crossing: 580,
+        gaps: 520,
+        slowmo: 490,
+        planks: 440,
+        bopping: 410,
+        glider: 370,
+        stones: 340,
+        mirror: 300,
+        selves: 260
+      };
+
+      const DEFAULT_GAME_SCORES = {
+        punching: 45,
+        rolling: 1240,
+        swinging: 32,
+        chopping: 48,
+        stacks: 24,
+        skirmish: 14,
+        hoops: 28,
+        typing: 18,
+        slicing: 52,
+        knockdown: 22,
+        stomping: 30,
+        crossing: 36,
+        gaps: 18,
+        slowmo: 26,
+        planks: 21,
+        bopping: 35,
+        glider: 16,
+        stones: 24,
+        mirror: 19,
+        selves: 10
+      };
+
+      function getPlayCounts() {
+        try {
+          const raw = localStorage.getItem('stickman_play_counts');
+          if (raw) return Object.assign({}, DEFAULT_PLAY_COUNTS, JSON.parse(raw));
+        } catch (e) {}
+        return Object.assign({}, DEFAULT_PLAY_COUNTS);
+      }
+
+      function getGameScores() {
+        try {
+          const raw = localStorage.getItem('stickman_game_scores');
+          if (raw) return Object.assign({}, DEFAULT_GAME_SCORES, JSON.parse(raw));
+        } catch (e) {}
+        return Object.assign({}, DEFAULT_GAME_SCORES);
+      }
+
+      function incrementGamePlay(slug) {
+        const counts = getPlayCounts();
+        counts[slug] = (counts[slug] || 0) + 1;
+        try {
+          localStorage.setItem('stickman_play_counts', JSON.stringify(counts));
+        } catch (e) {}
+        updateHomepageCardsUI();
+        if (currentSelectedGameSlug === slug) {
+          renderSelectedGameRank(slug);
+        }
+      }
+
+      function saveGameScore(slug, score) {
+        if (!score || score <= 0) return;
+        const scores = getGameScores();
+        const currentBest = scores[slug] || 0;
+        if (score > currentBest) {
+          scores[slug] = score;
+          try {
+            localStorage.setItem('stickman_game_scores', JSON.stringify(scores));
+          } catch (e) {}
+
+          // Submit to Apple Game Center per-game leaderboard
+          if (GameCenter && GameCenter.submitScore) {
+            GameCenter.submitScore({
+              score: score,
+              leaderboardID: 'stickman_war_' + slug
+            }).catch(() => {});
+          }
+
+          // Award War Points
+          const addPoints = Math.max(5, Math.floor(score / 3));
+          const currentWp = getWarPoints();
+          localStorage.setItem('stickman_war_points', (currentWp + addPoints).toString());
+          updateRankUI();
+          updateHomepageCardsUI();
+
+          if (currentSelectedGameSlug === slug) {
+            renderSelectedGameRank(slug);
+          }
+        }
+      }
+
+      function getGameRankTier(slug, score) {
+        const info = ALL_GAMES_INFO.find((g) => g.slug === slug) || { unit: 'pts', thresholds: [15, 35, 65, 100] };
+        const t = info.thresholds;
+        const unit = info.unit;
+
+        if (score < t[0]) {
+          return {
+            badge: '🥉',
+            rankTitle: 'Tân Binh Đồng',
+            currTierLbl: `Đồng (0 ${unit})`,
+            nextTierLbl: `Mục tiêu: Bạc (${t[0]} ${unit})`,
+            progress: Math.min(100, Math.round((score / t[0]) * 100))
+          };
+        } else if (score < t[1]) {
+          return {
+            badge: '🥈',
+            rankTitle: 'Chiến Binh Bạc',
+            currTierLbl: `Bạc (${t[0]} ${unit})`,
+            nextTierLbl: `Mục tiêu: Vàng (${t[1]} ${unit})`,
+            progress: Math.min(100, Math.round(((score - t[0]) / (t[1] - t[0])) * 100))
+          };
+        } else if (score < t[2]) {
+          return {
+            badge: '🥇',
+            rankTitle: 'Đấu Sĩ Vàng',
+            currTierLbl: `Vàng (${t[1]} ${unit})`,
+            nextTierLbl: `Mục tiêu: Kim Cương (${t[2]} ${unit})`,
+            progress: Math.min(100, Math.round(((score - t[1]) / (t[2] - t[1])) * 100))
+          };
+        } else if (score < t[3]) {
+          return {
+            badge: '💎',
+            rankTitle: 'Bậc Thầy Kim Cương',
+            currTierLbl: `Kim Cương (${t[2]} ${unit})`,
+            nextTierLbl: `Mục tiêu: Chiến Thần (${t[3]} ${unit})`,
+            progress: Math.min(100, Math.round(((score - t[2]) / (t[3] - t[2])) * 100))
+          };
+        } else {
+          return {
+            badge: '👑',
+            rankTitle: 'Chiến Thần Tối Cao',
+            currTierLbl: `Chiến Thần (>${t[3]} ${unit})`,
+            nextTierLbl: 'Cấp Bậc Tối Thượng 🏆',
+            progress: 100
+          };
+        }
+      }
+
+      // Format numbers cleanly (e.g. 1520 -> 1.5k)
+      function formatCount(num) {
+        if (num >= 1000) return (num / 1000).toFixed(1).replace('.0', '') + 'k';
+        return num.toString();
+      }
+
+      // Update Homepage Game Cards (Play count, Rank Badges, Hot Badges)
+      function updateHomepageCardsUI() {
+        const counts = getPlayCounts();
+        const scores = getGameScores();
+
+        // Find top 3 played games
+        const sortedSlugsByPlay = Object.keys(counts).sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
+        const top1 = sortedSlugsByPlay[0];
+        const top2 = sortedSlugsByPlay[1];
+        const top3 = sortedSlugsByPlay[2];
+
+        document.querySelectorAll('.game-card').forEach((card) => {
+          const slug = card.getAttribute('data-game-slug');
+          if (!slug) return;
+
+          const playCount = counts[slug] || 0;
+          const bestScore = scores[slug] || 0;
+          const tier = getGameRankTier(slug, bestScore);
+
+          // Update play count number
+          const playsNumEl = card.querySelector('.plays-count-num');
+          if (playsNumEl) playsNumEl.textContent = formatCount(playCount);
+
+          // Update rank badge on top-right
+          const rankBadgeIcon = card.querySelector('.rank-badge-icon');
+          const rankBadgeText = card.querySelector('.rank-badge-text');
+          if (rankBadgeIcon) rankBadgeIcon.textContent = tier.badge;
+          if (rankBadgeText) rankBadgeText.textContent = tier.rankTitle.replace('Chiến Binh ', '').replace('Bậc Thầy ', '').replace('Tân Binh ', '').replace('Đấu Sĩ ', '');
+
+          // Update Hot Badge on top-left
+          const hotBadge = card.querySelector('.game-hot-badge');
+          const hotText = card.querySelector('.hot-badge-text');
+          if (hotBadge && hotText) {
+            if (slug === top1) {
+              hotBadge.style.display = 'inline-flex';
+              hotBadge.className = 'game-hot-badge absolute top-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 rounded-md border border-stone-900 bg-rose-500 px-1.5 py-0.5 text-[9.5px] font-black text-white shadow-xs select-none';
+              hotText.textContent = '🔥 Top 1 Hot';
+            } else if (slug === top2) {
+              hotBadge.style.display = 'inline-flex';
+              hotBadge.className = 'game-hot-badge absolute top-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 rounded-md border border-stone-900 bg-amber-500 px-1.5 py-0.5 text-[9.5px] font-black text-stone-950 shadow-xs select-none';
+              hotText.textContent = '⚡ Top 2 Hot';
+            } else if (slug === top3) {
+              hotBadge.style.display = 'inline-flex';
+              hotBadge.className = 'game-hot-badge absolute top-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 rounded-md border border-stone-900 bg-amber-300 px-1.5 py-0.5 text-[9.5px] font-black text-stone-900 shadow-xs select-none';
+              hotText.textContent = '⭐ Top 3 Hot';
+            } else {
+              hotBadge.style.display = 'none';
+            }
+          }
+        });
+      }
+
+      // Classification & Sorting on Homepage
+      const sortContainer = document.getElementById('games-grid-container');
+      const sortMostPlayedBtn = document.getElementById('tab-sort-most-played');
+      const sortTopScoreBtn = document.getElementById('tab-sort-top-score');
+      const sortDefaultBtn = document.getElementById('tab-sort-default');
+
+      function setSortActiveTab(activeBtn) {
+        [sortMostPlayedBtn, sortTopScoreBtn, sortDefaultBtn].forEach((btn) => {
+          if (!btn) return;
+          if (btn === activeBtn) {
+            btn.className = 'sort-tab-btn flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold border-2 border-stone-800 bg-[#fde68a] text-stone-900 shadow-[1.5px_2px_0px_#1f2329] active:translate-y-[1px] transition-all';
+          } else {
+            btn.className = 'sort-tab-btn flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold border-2 border-stone-800 bg-white text-stone-700 hover:bg-amber-50 shadow-[1.5px_2px_0px_#1f2329] active:translate-y-[1px] transition-all';
+          }
+        });
+      }
+
+      sortMostPlayedBtn?.addEventListener('click', () => {
+        setSortActiveTab(sortMostPlayedBtn);
+        const counts = getPlayCounts();
+        const cards = Array.from(document.querySelectorAll('.game-card'));
+        cards.sort((a, b) => {
+          const sA = a.getAttribute('data-game-slug') || '';
+          const sB = b.getAttribute('data-game-slug') || '';
+          return (counts[sB] || 0) - (counts[sA] || 0);
+        });
+        cards.forEach((card) => sortContainer?.appendChild(card));
+      });
+
+      sortTopScoreBtn?.addEventListener('click', () => {
+        setSortActiveTab(sortTopScoreBtn);
+        const scores = getGameScores();
+        const cards = Array.from(document.querySelectorAll('.game-card'));
+        cards.sort((a, b) => {
+          const sA = a.getAttribute('data-game-slug') || '';
+          const sB = b.getAttribute('data-game-slug') || '';
+          return (scores[sB] || 0) - (scores[sA] || 0);
+        });
+        cards.forEach((card) => sortContainer?.appendChild(card));
+      });
+
+      sortDefaultBtn?.addEventListener('click', () => {
+        setSortActiveTab(sortDefaultBtn);
+        const cards = Array.from(document.querySelectorAll('.game-card'));
+        cards.sort((a, b) => {
+          const oA = parseInt(a.getAttribute('data-initial-order') || '0', 10);
+          const oB = parseInt(b.getAttribute('data-initial-order') || '0', 10);
+          return oA - oB;
+        });
+        cards.forEach((card) => sortContainer?.appendChild(card));
+      });
+
+      // ==========================================
+      // DETAILED PER-GAME RANK MODAL SYSTEM
+      // ==========================================
+      let currentSelectedGameSlug = 'punching';
+
+      const tabBtnMinigameRank = document.getElementById('tab-btn-minigame-rank');
+      const tabBtnMostPlayed = document.getElementById('tab-btn-most-played');
+      const tabBtnGlobalRank = document.getElementById('tab-btn-global-rank');
+
+      const rankViewMinigame = document.getElementById('rank-view-minigame');
+      const rankViewMostPlayed = document.getElementById('rank-view-most-played');
+      const rankViewGlobal = document.getElementById('rank-view-global');
+
+      function switchRankTab(activeTab) {
+        [tabBtnMinigameRank, tabBtnMostPlayed, tabBtnGlobalRank].forEach((btn) => {
+          if (!btn) return;
+          if (btn === activeTab) {
+            btn.className = 'rank-nav-tab flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-[11px] bg-white text-stone-900 shadow-xs border border-stone-800/20 active:translate-y-[0.5px] transition-all';
+          } else {
+            btn.className = 'rank-nav-tab flex-1 py-1.5 px-1 rounded-lg text-center font-bold text-[11px] text-stone-600 hover:text-stone-900 active:translate-y-[0.5px] transition-all';
+          }
+        });
+
+        if (rankViewMinigame) rankViewMinigame.style.display = activeTab === tabBtnMinigameRank ? 'flex' : 'none';
+        if (rankViewMostPlayed) rankViewMostPlayed.style.display = activeTab === tabBtnMostPlayed ? 'flex' : 'none';
+        if (rankViewGlobal) rankViewGlobal.style.display = activeTab === tabBtnGlobalRank ? 'flex' : 'none';
+
+        if (activeTab === tabBtnMostPlayed) {
+          renderMostPlayedTabList();
+        }
+      }
+
+      tabBtnMinigameRank?.addEventListener('click', () => switchRankTab(tabBtnMinigameRank));
+      tabBtnMostPlayed?.addEventListener('click', () => switchRankTab(tabBtnMostPlayed));
+      tabBtnGlobalRank?.addEventListener('click', () => switchRankTab(tabBtnGlobalRank));
+
+      function renderSelectedGameRank(slug) {
+        currentSelectedGameSlug = slug;
+        const game = ALL_GAMES_INFO.find((g) => g.slug === slug) || ALL_GAMES_INFO[0];
+        const scores = getGameScores();
+        const counts = getPlayCounts();
+        const myScore = scores[slug] || 0;
+        const myPlays = counts[slug] || 0;
+        const tier = getGameRankTier(slug, myScore);
+
+        // Highlight picker item
+        document.querySelectorAll('.minigame-picker-btn').forEach((btn) => {
+          const btnSlug = btn.getAttribute('data-picker-slug');
+          if (btnSlug === slug) {
+            btn.className = 'minigame-picker-btn shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-xl border-2 border-stone-900 text-[11px] font-bold shadow-xs bg-amber-300 text-stone-950';
+            btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          } else {
+            btn.className = 'minigame-picker-btn shrink-0 flex items-center gap-1.5 px-2 py-1 rounded-xl border border-stone-800 text-[11px] font-bold shadow-xs bg-white text-stone-700 hover:bg-stone-50';
+          }
+        });
+
+        // Update card info
+        const titleEl = document.getElementById('selected-game-title');
+        const badgeEl = document.getElementById('selected-game-badge');
+        const rankNameEl = document.getElementById('selected-game-rank-name');
+        const scoreEl = document.getElementById('selected-game-score');
+        const currTierEl = document.getElementById('selected-game-curr-tier-lbl');
+        const nextTierEl = document.getElementById('selected-game-next-tier-lbl');
+        const progressBarEl = document.getElementById('selected-game-progress-bar');
+        const playsStatEl = document.getElementById('selected-game-plays-stat');
+        const gcIdEl = document.getElementById('selected-game-gc-id');
+        const lbGameNameEl = document.getElementById('leaderboard-game-name');
+
+        if (titleEl) titleEl.textContent = game.name;
+        if (badgeEl) badgeEl.textContent = tier.badge;
+        if (rankNameEl) rankNameEl.textContent = `${tier.badge} ${tier.rankTitle}`;
+        if (scoreEl) scoreEl.innerHTML = `${myScore} <span class='text-[10px] font-bold text-amber-800'>${game.unit}</span>`;
+        if (currTierEl) currTierEl.textContent = tier.currTierLbl;
+        if (nextTierEl) nextTierEl.textContent = tier.nextTierLbl;
+        if (progressBarEl) progressBarEl.style.width = `${tier.progress}%`;
+        if (playsStatEl) playsStatEl.textContent = `🕹️ Lượt chơi: ${myPlays} lần`;
+        if (gcIdEl) gcIdEl.textContent = `ID: stickman_war_${slug}`;
+        if (lbGameNameEl) lbGameNameEl.textContent = game.name;
+
+        // Render Top 5 mock leaderboard for this game
+        const topListEl = document.getElementById('selected-game-top-list');
+        if (topListEl) {
+          const mockTop = [
+            { rank: '1 🥇', name: 'NinjaStick_Pro', score: Math.round(myScore * 1.8 + 25) },
+            { rank: '2 🥈', name: 'ShadowFighter', score: Math.round(myScore * 1.4 + 15) },
+            { rank: '3 🥉', name: 'DragonMaster', score: Math.round(myScore * 1.15 + 8) },
+            { rank: '4 🎖️', name: 'Bạn (Stickman)', score: myScore, isMe: true },
+            { rank: '5 🎖️', name: 'GoonHunter_VN', score: Math.max(0, Math.round(myScore * 0.85 - 5)) }
+          ];
+          topListEl.innerHTML = mockTop
+            .map(
+              (p) => `
+            <div class='flex items-center justify-between py-1.5 ${p.isMe ? 'bg-amber-50/90 font-bold text-amber-950 px-1 rounded' : 'text-stone-700'}'>
+              <div class='flex items-center gap-2'>
+                <span class='w-6 text-center font-bold text-[10.5px]'>${p.rank}</span>
+                <span>${p.name}</span>
+              </div>
+              <div class='font-black text-stone-900'>${p.score} <span class='text-[9.5px] font-semibold text-stone-500'>${game.unit}</span></div>
+            </div>
+          `
+            )
+            .join('');
+        }
+      }
+
+      // Connect Minigame Picker Buttons in Tab 1
+      document.querySelectorAll('.minigame-picker-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const slug = btn.getAttribute('data-picker-slug');
+          if (slug) renderSelectedGameRank(slug);
+        });
+      });
+
+      // Tab 1 Action Buttons
+      const openSelectedGameGcBtn = document.getElementById('open-selected-game-gc-btn');
+      const playSelectedGameDirectBtn = document.getElementById('play-selected-game-direct-btn');
+
+      openSelectedGameGcBtn?.addEventListener('click', async () => {
+        const gcLeaderboardId = 'stickman_war_' + currentSelectedGameSlug;
+        try {
+          if (window.Capacitor?.isNativePlatform?.()) {
+            await GameCenter.showLeaderboard({ leaderboardID: gcLeaderboardId });
+          } else {
+            alert(`🏆 Apple Game Center: Đang mở Bảng Xếp Hạng riêng cho ${currentSelectedGameSlug} (${gcLeaderboardId})!`);
+          }
+        } catch (e) {
+          alert(`🏆 Game Center: Leaderboard ${gcLeaderboardId} đã sẵn sàng!`);
+        }
+      });
+
+      playSelectedGameDirectBtn?.addEventListener('click', () => {
+        closeRankModal();
+        openGame(currentSelectedGameSlug);
+      });
+
+      // Tab 2: Render Top 20 Most Played Minigames
+      function renderMostPlayedTabList() {
+        const container = document.getElementById('most-played-list-container');
+        if (!container) return;
+
+        const counts = getPlayCounts();
+        const scores = getGameScores();
+        const sortedGames = [...ALL_GAMES_INFO].sort((a, b) => (counts[b.slug] || 0) - (counts[a.slug] || 0));
+        const maxPlays = Math.max(...sortedGames.map((g) => counts[g.slug] || 0), 1);
+
+        container.innerHTML = sortedGames
+          .map((g, idx) => {
+            const plays = counts[g.slug] || 0;
+            const pct = Math.min(100, Math.round((plays / maxPlays) * 100));
+            const best = scores[g.slug] || 0;
+            const tier = getGameRankTier(g.slug, best);
+
+            let rankIcon = `#${idx + 1}`;
+            if (idx === 0) rankIcon = '🥇 #1';
+            else if (idx === 1) rankIcon = '🥈 #2';
+            else if (idx === 2) rankIcon = '🥉 #3';
+
+            return `
+            <div class='flex items-center justify-between p-2 rounded-xl bg-white border border-stone-800/15 shadow-xs'>
+              <div class='flex items-center gap-2 flex-1 min-w-0 pr-2'>
+                <span class='w-7 text-center font-bold text-[11px] text-stone-800'>${rankIcon}</span>
+                <img src='/thumbs/${g.slug}.webp' alt='' class='size-8 rounded-lg object-contain bg-neutral-100 border border-stone-200' />
+                <div class='min-w-0 flex-1'>
+                  <div class='flex items-center gap-1.5'>
+                    <span class='font-bold text-[12.5px] text-stone-900 truncate'>${g.name}</span>
+                    <span class='text-[10px] font-bold text-amber-900 bg-amber-100 px-1 py-0.2 rounded'>${tier.badge}</span>
+                  </div>
+                  <div class='flex items-center gap-2 mt-0.5'>
+                    <span class='text-[10.5px] font-semibold text-rose-600'>🔥 ${formatCount(plays)} lượt</span>
+                    <div class='w-16 h-1.5 bg-stone-100 rounded-full overflow-hidden'>
+                      <div class='h-full bg-gradient-to-r from-amber-400 to-rose-500 rounded-full' style='width: ${pct}%'></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                type='button'
+                class='play-now-from-list-btn shrink-0 px-2.5 py-1 rounded-lg bg-amber-300 hover:bg-amber-400 text-stone-900 font-bold text-[11px] border border-stone-800 shadow-xs active:translate-y-[0.5px]'
+                data-play-slug='${g.slug}'
+              >
+                Chơi
+              </button>
+            </div>
+          `;
+          })
+          .join('');
+
+        // Connect play buttons in list
+        container.querySelectorAll('.play-now-from-list-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const slug = btn.getAttribute('data-play-slug');
+            if (slug) {
+              closeRankModal();
+              openGame(slug);
+            }
+          });
+        });
+      }
+
+      // Connect Quick Rank button on each game card
+      document.querySelectorAll('.game-quick-rank-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const slug = btn.getAttribute('data-rank-slug');
+          if (slug) {
+            openRankModal();
+            switchRankTab(tabBtnMinigameRank);
+            renderSelectedGameRank(slug);
+          }
+        });
+      });
+
+      let currentSlugActive = null;
+      let scoreSyncInterval = null;
+
       function setupIframe() {
         try {
           const win = frame.contentWindow;
@@ -682,7 +1383,23 @@ const jsonLd = {
           // Chặn double-tap zoom trên WebKit
           doc.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
 
-          // Kiểm soát ẩn/hiện nút Home góc trên: Khi thẻ kết game/start card xuất hiện thì ẩn nút nổi (vì đã có nút Trang chủ bên trong thẻ)
+          // Periodic score sync from inside the game iframe
+          if (scoreSyncInterval) clearInterval(scoreSyncInterval);
+          scoreSyncInterval = setInterval(() => {
+            try {
+              if (!currentSlugActive) return;
+              const sEl = doc.getElementById('score');
+              const bEl = doc.getElementById('best');
+              const sVal = parseInt(sEl?.textContent || '0', 10);
+              const bVal = parseInt(bEl?.textContent || '0', 10);
+              const score = Math.max(isNaN(sVal) ? 0 : sVal, isNaN(bVal) ? 0 : bVal);
+              if (score > 0) {
+                saveGameScore(currentSlugActive, score);
+              }
+            } catch (err) {}
+          }, 1200);
+
+          // Kiểm soát ẩn/hiện nút Home góc trên
           function checkCardState() {
             try {
               const hasCard = !!(
@@ -693,6 +1410,16 @@ const jsonLd = {
                 doc.querySelector('#endCard.show')
               );
               setHomeButtonVisible(!hasCard);
+
+              // When card shows (game over or end), sync score immediately
+              if (hasCard && currentSlugActive) {
+                const sEl = doc.getElementById('score');
+                const bEl = doc.getElementById('best');
+                const sVal = parseInt(sEl?.textContent || '0', 10);
+                const bVal = parseInt(bEl?.textContent || '0', 10);
+                const score = Math.max(isNaN(sVal) ? 0 : sVal, isNaN(bVal) ? 0 : bVal);
+                if (score > 0) saveGameScore(currentSlugActive, score);
+              }
             } catch (e) {}
           }
 
@@ -724,7 +1451,7 @@ const jsonLd = {
             }
           }, true);
 
-          // Bắt lệnh click tải ảnh từ code js của game và chuyển hướng sang popup xem ảnh chuẩn mobile
+          // Bắt lệnh click tải ảnh từ code js của game
           const origClick = win.HTMLAnchorElement.prototype.click;
           win.HTMLAnchorElement.prototype.click = function() {
             if (this.href && (this.href.startsWith('blob:') || this.download)) {
@@ -740,6 +1467,8 @@ const jsonLd = {
 
       function openGame(slug) {
         if (!modal || !frame) return;
+        currentSlugActive = slug;
+        incrementGamePlay(slug);
         frame.src = `/games/${slug}.html`;
         modal.style.display = 'block';
         modal.classList.remove('hidden');
@@ -747,6 +1476,21 @@ const jsonLd = {
         setHomeButtonVisible(false);
 
         frame.onload = setupIframe;
+      }
+
+      function closeGame() {
+        if (scoreSyncInterval) {
+          clearInterval(scoreSyncInterval);
+          scoreSyncInterval = null;
+        }
+        currentSlugActive = null;
+        if (!modal || !frame) return;
+        frame.src = 'about:blank';
+        modal.style.display = 'none';
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        closeScorecard();
+        updateHomepageCardsUI();
       }
 
       // Also listen for popstate or messages
@@ -1080,8 +1824,10 @@ const jsonLd = {
         }
       });
 
-      // Initial Rank Setup
+      // Initial Rank & Homepage Cards Setup
       updateRankUI();
+      updateHomepageCardsUI();
+      renderSelectedGameRank('punching');
     }
   </script>
 </Base>
