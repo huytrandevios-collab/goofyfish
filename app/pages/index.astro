@@ -28,13 +28,16 @@ const jsonLd = {
         <div class='relative flex size-9.5 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 11px 13px 10px 12px / 13px 11px 12px 10px;'>
           <img src="/favicon-192.png" alt="Stickman War Icon" class="size-full object-cover" />
         </div>
-        <div>
-          <h1 class='font-display text-[20px] font-bold tracking-tight text-stone-900 sm:text-[23px] leading-none'>
+        <div id='header-profile-section' class='cursor-pointer select-none active:opacity-80 transition-opacity'>
+          <h1 class='font-display text-[19.5px] font-bold tracking-tight text-stone-900 sm:text-[23px] leading-none'>
             Stickman War
           </h1>
-          <p class='text-[11px] font-medium text-amber-900/80 leading-tight mt-0.5'>
-            Arcade Battle Edition
-          </p>
+          <!-- Dynamic Game Center Player Name Bar -->
+          <div id='top-bar-player-info' class='flex items-center gap-1.5 text-[11px] font-bold text-amber-900 mt-0.5 leading-tight'>
+            <span id='top-bar-player-status' class='size-2 rounded-full bg-emerald-500 shadow-xs'></span>
+            <span id='top-bar-player-name' class='truncate max-w-[170px] sm:max-w-[240px]'> Huy Lộc Phát </span>
+            <span id='top-bar-player-tier' class='text-[9.5px] font-bold px-1.5 py-0.2 rounded-full bg-amber-200/90 text-amber-950 border border-amber-900/20'>🥈 Bạc</span>
+          </div>
         </div>
       </div>
 
@@ -484,6 +487,20 @@ const jsonLd = {
             <input id='setting-haptic-toggle' type='checkbox' checked class='sr-only peer' />
             <div class='w-9 h-5 bg-stone-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500'></div>
           </label>
+        </div>
+
+        <!-- Player Name & Game Center Profile -->
+        <div class='flex items-center justify-between p-2.5 rounded-xl bg-white border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 14px 12px 13px 15px / 12px 14px 15px 13px;'>
+          <div class='flex items-center gap-2'>
+            <span class='text-base'>👤</span>
+            <div>
+              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Tên Người Chơi</div>
+              <div id='settings-player-name-display' class='text-[10px] text-amber-900 font-semibold leading-tight'> Huy Lộc Phát </div>
+            </div>
+          </div>
+          <button id='settings-edit-name-btn' type='button' class='px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-amber-100 text-stone-900 font-bold text-[11px] border border-stone-800 shadow-xs active:scale-95'>
+            Đổi Tên
+          </button>
         </div>
 
         <!-- Apple Game Center Status -->
@@ -1236,7 +1253,7 @@ const jsonLd = {
             { rank: '1 🥇', name: 'NinjaStick_Pro', score: Math.round(myScore * 1.8 + 25) },
             { rank: '2 🥈', name: 'ShadowFighter', score: Math.round(myScore * 1.4 + 15) },
             { rank: '3 🥉', name: 'DragonMaster', score: Math.round(myScore * 1.15 + 8) },
-            { rank: '4 🎖️', name: 'Bạn (Stickman)', score: myScore, isMe: true },
+            { rank: '4 🎖️', name: `<span class="my-player-display-name">${getPlayerName()} (Bạn)</span>`, score: myScore, isMe: true },
             { rank: '5 🎖️', name: 'GoonHunter_VN', score: Math.max(0, Math.round(myScore * 0.85 - 5)) }
           ];
           topListEl.innerHTML = mockTop
@@ -1616,30 +1633,78 @@ const jsonLd = {
         if (rankProgressBar) rankProgressBar.style.width = `${progress}%`;
       }
 
-      // 3. Apple Game Center Bridge
+      // 3. Apple Game Center Bridge & Player Identity
       const GameCenter = window.Capacitor?.registerPlugin?.('GameCenter') || window.Capacitor?.Plugins?.GameCenter || {
-        authenticate: async () => ({ authenticated: true, alias: 'Player' }),
+        authenticate: async () => ({ authenticated: true, alias: ' Huy Lộc Phát ' }),
         showLeaderboard: async () => ({ success: true }),
         submitScore: async (opts) => ({ submitted: true, score: opts?.score || 0 }),
-        getPlayerProfile: async () => ({ authenticated: true, alias: 'Stickman Fighter' })
+        getPlayerProfile: async () => ({ authenticated: true, alias: ' Huy Lộc Phát ' })
       };
 
+      function getPlayerName() {
+        return localStorage.getItem('stickman_gc_alias') || localStorage.getItem('stickman_player_name') || ' Huy Lộc Phát ';
+      }
+
+      function updatePlayerUI(alias, isAuthenticated) {
+        const points = getWarPoints();
+        const topBarName = document.getElementById('top-bar-player-name');
+        const topBarStatus = document.getElementById('top-bar-player-status');
+        const topBarTier = document.getElementById('top-bar-player-tier');
+        const rankAlias = document.getElementById('rank-player-alias');
+        const settingsStatus = document.getElementById('settings-gc-status');
+        const settingsPlayerDisplay = document.getElementById('settings-player-name-display');
+
+        let tierShort = '🥉 Đồng';
+        if (points >= 1000) tierShort = '👑 Thần';
+        else if (points >= 500) tierShort = '💎 KC';
+        else if (points >= 250) tierShort = '🥇 Vàng';
+        else if (points >= 100) tierShort = '🥈 Bạc';
+
+        if (topBarName) topBarName.textContent = alias || ' Huy Lộc Phát ';
+        if (topBarTier) topBarTier.textContent = tierShort;
+        if (topBarStatus) {
+          topBarStatus.className = isAuthenticated
+            ? 'size-2 rounded-full bg-emerald-500 shadow-xs'
+            : 'size-2 rounded-full bg-amber-400';
+        }
+        if (rankAlias) {
+          rankAlias.textContent = isAuthenticated ? `Game Center: ${alias}` : `Chiến binh: ${alias}`;
+        }
+        if (settingsStatus) {
+          settingsStatus.textContent = isAuthenticated ? `🟢 Đã kết nối: ${alias}` : `🔴 Chạm để kết nối Game Center`;
+        }
+        if (settingsPlayerDisplay) {
+          settingsPlayerDisplay.textContent = alias || ' Huy Lộc Phát ';
+        }
+
+        // Update in rank modal tables if open
+        const myNameInTables = document.querySelectorAll('.my-player-display-name');
+        myNameInTables.forEach((el) => {
+          el.textContent = `${alias} (Bạn)`;
+        });
+      }
+
       async function initGameCenter() {
+        const initialName = getPlayerName();
+        updatePlayerUI(initialName, false);
+
         try {
           // Tự động kích hoạt đăng nhập Game Center ngay khi mở app
           const authRes = await GameCenter.authenticate();
           if (authRes?.authenticated && authRes?.alias) {
-            if (rankPlayerAlias) rankPlayerAlias.textContent = `Game Center: ${authRes.alias}`;
-            const settingsGcStatus = document.getElementById('settings-gc-status');
-            if (settingsGcStatus) settingsGcStatus.textContent = `🟢 Đã kết nối: ${authRes.alias}`;
+            localStorage.setItem('stickman_gc_alias', authRes.alias);
+            updatePlayerUI(authRes.alias, true);
             
             // Tự động đồng bộ điểm số tích lũy lên Game Center Leaderboard
             const points = getWarPoints();
             await GameCenter.submitScore({ score: points, leaderboardID: 'stickman_war_leaderboard' });
           } else {
             const profile = await GameCenter.getPlayerProfile();
-            if (profile?.alias && rankPlayerAlias) {
-              rankPlayerAlias.textContent = `Game Center: ${profile.alias}`;
+            if (profile?.authenticated && profile?.alias) {
+              localStorage.setItem('stickman_gc_alias', profile.alias);
+              updatePlayerUI(profile.alias, true);
+            } else if (profile?.alias) {
+              updatePlayerUI(profile.alias, false);
             }
           }
         } catch (e) {
@@ -1647,6 +1712,27 @@ const jsonLd = {
         }
       }
       initGameCenter();
+
+      // Tap top profile bar to open Rank modal
+      const headerProfileSec = document.getElementById('header-profile-section');
+      headerProfileSec?.addEventListener('click', () => {
+        openRankModal();
+      });
+
+      // Settings Edit Name Button
+      const editNameBtn = document.getElementById('settings-edit-name-btn');
+      editNameBtn?.addEventListener('click', () => {
+        const current = getPlayerName();
+        const newName = prompt('Nhập tên người chơi Stickman của bạn:', current);
+        if (newName && newName.trim()) {
+          const trimmed = newName.trim();
+          localStorage.setItem('stickman_player_name', trimmed);
+          localStorage.setItem('stickman_gc_alias', trimmed);
+          updatePlayerUI(trimmed, true);
+          renderSelectedGameRank(currentSelectedGameSlug);
+          alert('✓ Đã cập nhật tên người chơi: ' + trimmed);
+        }
+      });
 
       async function triggerOpenGameCenter() {
         try {

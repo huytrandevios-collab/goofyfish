@@ -15,17 +15,44 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControll
     
     @objc func authenticate(_ call: CAPPluginCall) {
         let player = GKLocalPlayer.local
-        player.authenticateHandler = { [weak self] vc, error in
-            if let vc = vc {
-                DispatchQueue.main.async {
-                    self?.bridge?.viewController?.present(vc, animated: true, completion: nil)
-                }
-            } else if player.isAuthenticated {
-                DispatchQueue.main.async {
+        
+        // 1. Nếu người chơi đã đăng nhập từ trước, trả về ngay lập tức
+        if player.isAuthenticated {
+            DispatchQueue.main.async {
+                if #available(iOS 14.0, *) {
                     GKAccessPoint.shared.location = .topTrailing
                     GKAccessPoint.shared.showHighlights = true
                     GKAccessPoint.shared.isActive = true
                 }
+            }
+            print("[GameCenter] Already authenticated: \(player.alias) (ID: \(player.gamePlayerID))")
+            call.resolve([
+                "authenticated": true,
+                "playerID": player.gamePlayerID,
+                "alias": player.alias,
+                "displayName": player.displayName
+            ])
+            return
+        }
+        
+        // 2. Thiết lập authenticateHandler để iOS hiển thị giao diện đăng nhập Game Center nếu cần
+        player.authenticateHandler = { [weak self] vc, error in
+            guard let self = self else { return }
+            
+            if let vc = vc {
+                DispatchQueue.main.async {
+                    let presenter = self.topViewController() ?? self.bridge?.viewController
+                    presenter?.present(vc, animated: true, completion: nil)
+                }
+            } else if player.isAuthenticated {
+                DispatchQueue.main.async {
+                    if #available(iOS 14.0, *) {
+                        GKAccessPoint.shared.location = .topTrailing
+                        GKAccessPoint.shared.showHighlights = true
+                        GKAccessPoint.shared.isActive = true
+                    }
+                }
+                print("[GameCenter] Login SUCCESS: \(player.alias) (ID: \(player.gamePlayerID))")
                 call.resolve([
                     "authenticated": true,
                     "playerID": player.gamePlayerID,
@@ -33,12 +60,34 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControll
                     "displayName": player.displayName
                 ])
             } else {
+                let errMsg = error?.localizedDescription ?? "Game Center login required in iOS Settings"
+                print("[GameCenter] Login notice: \(errMsg)")
                 call.resolve([
                     "authenticated": false,
-                    "error": error?.localizedDescription ?? "Not authenticated"
+                    "error": errMsg,
+                    "alias": "Stickman Fighter",
+                    "displayName": "Stickman Fighter"
                 ])
             }
         }
+    }
+    
+    private func topViewController(base: UIViewController? = nil) -> UIViewController? {
+        let base = base ?? self.bridge?.viewController ?? UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }?.rootViewController
+        
+        if let nav = base as? UINavigationController {
+            return topViewController(base: nav.visibleViewController)
+        }
+        if let tab = base as? UITabBarController {
+            return topViewController(base: tab.selectedViewController)
+        }
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        return base
     }
     
     @objc func showLeaderboard(_ call: CAPPluginCall) {
