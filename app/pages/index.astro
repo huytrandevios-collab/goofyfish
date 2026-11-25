@@ -32,15 +32,11 @@ const jsonLd = {
           <h1 class='font-display text-[19.5px] font-bold tracking-tight text-stone-900 sm:text-[23px] leading-none'>
             Stickman War
           </h1>
-          <!-- Dynamic Game Center Player Name Bar & 7-Day VIP Badge -->
+          <!-- Dynamic Game Center Player Name Bar -->
           <div id='top-bar-player-info' class='flex items-center gap-1.5 text-[11px] font-bold text-amber-900 mt-0.5 leading-tight'>
             <span id='top-bar-player-status' class='size-2 rounded-full bg-emerald-500 shadow-xs shrink-0'></span>
-            <span id='top-bar-player-name' class='truncate max-w-[130px] sm:max-w-[220px]'> Huy Lộc Phát </span>
-            <span id='top-bar-player-tier' class='text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-200/90 text-amber-950 border border-amber-900/20 shrink-0'>🥈 Bạc</span>
-            <button id='top-bar-vip-badge' type='button' class='inline-flex items-center gap-0.5 text-[9px] font-black px-1.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-stone-900 border border-stone-800 shadow-xs cursor-pointer active:scale-95 shrink-0 whitespace-nowrap'>
-              <span class='shrink-0'>👑</span>
-              <span id='top-bar-vip-text' class='whitespace-nowrap'>VIP 7 Ngày Free</span>
-            </button>
+            <span id='top-bar-player-name' class='truncate max-w-[170px] sm:max-w-[240px]'> Huy Lộc Phát </span>
+            <span id='top-bar-player-tier' class='text-[9.5px] font-bold px-1.5 py-0.2 rounded-full bg-amber-200/90 text-amber-950 border border-amber-900/20 shrink-0'>🥈 Bạc</span>
           </div>
         </div>
       </div>
@@ -507,13 +503,13 @@ const jsonLd = {
           </button>
         </div>
 
-        <!-- VIP 7-Day Free Trial & Remove Ads Store -->
-        <div class='flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-100 via-yellow-50 to-amber-200 border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 13px 15px 12px 14px / 15px 13px 14px 12px;'>
+        <!-- Remove Ads Store -->
+        <div class='flex items-center justify-between p-2.5 rounded-xl bg-white border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 13px 15px 12px 14px / 15px 13px 14px 12px;'>
           <div class='flex items-center gap-2'>
             <span class='text-lg'>👑</span>
             <div>
-              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>VIP 7 Ngày Miễn Phí</div>
-              <div id='settings-vip-trial-countdown' class='text-[10px] text-amber-900 font-bold leading-tight'>⏳ Đang kích hoạt · Còn 7 ngày</div>
+              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Gói Xóa Quảng Cáo</div>
+              <div class='text-[10px] text-stone-500 leading-tight'>Chơi mượt mà không quảng cáo · $4.99</div>
             </div>
           </div>
           <button id='settings-open-store-btn' type='button' class='px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-[11px] border border-stone-800 shadow-xs active:scale-95'>
@@ -813,8 +809,8 @@ const jsonLd = {
             👑
           </div>
           <div>
-            <h3 class='font-display text-[15.5px] font-bold text-stone-900 leading-tight'>Cửa Hàng VIP Stickman</h3>
-            <p class='text-[10px] font-medium text-amber-900/80 leading-tight'>7 Ngày Free · Gói Xóa Quảng Cáo</p>
+            <h3 class='font-display text-[15.5px] font-bold text-stone-900 leading-tight'>Cửa Hàng Xóa Quảng Cáo</h3>
+            <p class='text-[10px] font-medium text-amber-900/80 leading-tight'>Stickman War Arcade · Gói Remove Ads</p>
           </div>
         </div>
         <button id='vip-store-close-btn' type='button' class='size-7 flex items-center justify-center rounded-full bg-stone-200/80 hover:bg-stone-300 text-stone-700 active:scale-90 font-bold text-sm'>
@@ -824,28 +820,6 @@ const jsonLd = {
 
       <!-- Scrollable Body -->
       <div class='mt-2.5 flex-1 overflow-y-auto pr-0.5 flex flex-col gap-2.5'>
-        <!-- Active 7-Day Free Trial Banner -->
-        <div class='p-3 rounded-2xl bg-gradient-to-br from-amber-200 via-amber-100 to-yellow-50 border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 16px 14px 15px 13px;'>
-          <div class='flex items-center justify-between mb-1'>
-            <div class='flex items-center gap-1.5'>
-              <span class='text-sm'>🎉</span>
-              <span class='text-[12.5px] font-black text-amber-950 uppercase tracking-tight'>7 Ngày Trải Nghiệm Free</span>
-            </div>
-            <span class='inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-bold shadow-xs'>
-              <span class='size-1.5 rounded-full bg-white animate-pulse'></span> Đang Bật
-            </span>
-          </div>
-          <p class='text-[10.5px] text-stone-700 leading-snug'>
-            Bạn đang được miễn phí <strong>100% sạch quảng cáo</strong> và tự động hồi sinh kỷ lục cho toàn bộ 20 game!
-          </p>
-          <div class='mt-2 pt-2 border-t border-amber-900/15 flex items-center justify-between'>
-            <span class='text-[10.5px] font-semibold text-amber-950'>Thời gian còn lại:</span>
-            <span id='modal-vip-countdown-timer' class='text-[11.5px] font-black text-rose-600 bg-white/90 px-2 py-0.5 rounded-md border border-stone-800/20'>
-              ⏳ 6 ngày 23 giờ 59p
-            </span>
-          </div>
-        </div>
-
         <!-- Super Value Combo Deal: All-Access 20 Games Pass -->
         <div class='relative p-3 rounded-2xl bg-stone-900 text-white border-2 border-amber-400 shadow-[3px_3.5px_0px_#1f2329]' style='border-radius: 15px 17px 14px 16px;'>
           <span class='absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-gradient-to-r from-rose-500 to-amber-500 text-white text-[9px] font-black uppercase tracking-wider shadow-xs border border-white/40'>
@@ -2046,16 +2020,11 @@ const jsonLd = {
       renderSelectedGameRank('punching');
 
       // ==========================================
-      // 7. VIP 7-DAY FREE TRIAL & STORE SYSTEM ($4.99)
+      // 7. VIP & REMOVE ADS STORE SYSTEM ($4.99)
       // ==========================================
-      const topBarVipBadge = document.getElementById('top-bar-vip-badge');
-      const topBarVipText = document.getElementById('top-bar-vip-text');
-      const settingsVipCountdown = document.getElementById('settings-vip-trial-countdown');
       const settingsOpenStoreBtn = document.getElementById('settings-open-store-btn');
-
       const vipStoreModal = document.getElementById('vip-store-modal');
       const vipStoreCloseBtn = document.getElementById('vip-store-close-btn');
-      const modalVipCountdownTimer = document.getElementById('modal-vip-countdown-timer');
       const buyAllAccessBtn = document.getElementById('buy-all-access-btn');
       const vipGamesList = document.getElementById('vip-games-list');
       const vipRestoreBtn = document.getElementById('vip-restore-btn');
@@ -2114,21 +2083,6 @@ const jsonLd = {
       }
 
       function updateVIPStatusUI() {
-        const vip = getVIPTrialData();
-        if (vip.isAllUnlocked) {
-          if (topBarVipText) topBarVipText.textContent = 'VIP Vĩnh Viễn';
-          if (settingsVipCountdown) settingsVipCountdown.textContent = '👑 Đã mở khóa All-Access trọn đời';
-          if (modalVipCountdownTimer) modalVipCountdownTimer.textContent = '👑 Vĩnh Viễn (All-Access)';
-        } else if (vip.isActive) {
-          if (topBarVipText) topBarVipText.textContent = `VIP Free (${vip.days > 0 ? vip.days + ' ngày' : vip.hours + 'h'})`;
-          if (settingsVipCountdown) settingsVipCountdown.textContent = `⏳ Đang kích hoạt · Còn ${vip.timeStr}`;
-          if (modalVipCountdownTimer) modalVipCountdownTimer.textContent = vip.fullTimeStr;
-        } else {
-          if (topBarVipText) topBarVipText.textContent = 'Mua VIP';
-          if (settingsVipCountdown) settingsVipCountdown.textContent = '⚠️ Hết hạn dùng thử · Mua Remove Ads';
-          if (modalVipCountdownTimer) modalVipCountdownTimer.textContent = 'Đã hết hạn 7 ngày free';
-        }
-
         renderVIPGamesList();
       }
 
@@ -2147,7 +2101,7 @@ const jsonLd = {
                 </div>
                 <div>
                   <div class='text-[12px] font-bold text-stone-900 leading-tight'>${game.name}</div>
-                  <div class='text-[9.5px] text-stone-500 leading-tight'>${isUnlocked ? '✓ Sạch quảng cáo trọn đời' : vip.isActive ? 'Miễn phí trong 7 ngày' : 'Gói Remove Ads'}</div>
+                  <div class='text-[9.5px] text-stone-500 leading-tight'>${isUnlocked ? '✓ Đã kích hoạt sạch quảng cáo' : 'Gói Xóa Quảng Cáo ($4.99)'}</div>
                 </div>
               </div>
               <div>
@@ -2197,7 +2151,6 @@ const jsonLd = {
         }
       }
 
-      topBarVipBadge?.addEventListener('click', openVIPStoreModal);
       settingsOpenStoreBtn?.addEventListener('click', () => {
         closeSettingsModal();
         openVIPStoreModal();
