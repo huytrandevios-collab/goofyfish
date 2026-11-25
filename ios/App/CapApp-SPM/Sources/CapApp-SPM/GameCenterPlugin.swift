@@ -20,9 +20,7 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControll
         if player.isAuthenticated {
             DispatchQueue.main.async {
                 if #available(iOS 14.0, *) {
-                    GKAccessPoint.shared.location = .topTrailing
-                    GKAccessPoint.shared.showHighlights = true
-                    GKAccessPoint.shared.isActive = true
+                    GKAccessPoint.shared.isActive = false
                 }
             }
             print("[GameCenter] Already authenticated: \(player.alias) (ID: \(player.gamePlayerID))")
@@ -47,9 +45,7 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin, GKGameCenterControll
             } else if player.isAuthenticated {
                 DispatchQueue.main.async {
                     if #available(iOS 14.0, *) {
-                        GKAccessPoint.shared.location = .topTrailing
-                        GKAccessPoint.shared.showHighlights = true
-                        GKAccessPoint.shared.isActive = true
+                        GKAccessPoint.shared.isActive = false
                     }
                 }
                 print("[GameCenter] Login SUCCESS: \(player.alias) (ID: \(player.gamePlayerID))")

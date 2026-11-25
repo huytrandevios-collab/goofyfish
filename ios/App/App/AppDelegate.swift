@@ -24,9 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("[GameCenter] Authenticated as: \(player.alias)")
                 DispatchQueue.main.async {
                     if #available(iOS 14.0, *) {
-                        GKAccessPoint.shared.location = .topTrailing
-                        GKAccessPoint.shared.showHighlights = true
-                        GKAccessPoint.shared.isActive = true
+                        GKAccessPoint.shared.isActive = false
                     }
                 }
             } else if let error = error {
