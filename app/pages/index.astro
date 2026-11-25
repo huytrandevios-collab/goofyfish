@@ -880,6 +880,61 @@ const jsonLd = {
     <span id='vip-toast-msg'>Giao dịch thành công!</span>
   </div>
 
+  <!-- ================= 5. GOOGLE ADMOB SMART PLAYER MODAL ================= -->
+  <div
+    id='admob-player-modal'
+    class='fixed inset-0 z-[100002] hidden items-center justify-center p-3 bg-black/90 backdrop-blur-lg select-none'
+    style='display: none; position: fixed; inset: 0; z-index: 100002;'
+  >
+    <div class='relative max-w-sm w-full flex flex-col rounded-2xl bg-[#181a20] border-2 border-stone-700 shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-4 text-white animate-in zoom-in-95 duration-200 overflow-hidden' style='border-radius: 20px 22px 21px 23px;'>
+      <!-- AdMob Top Header -->
+      <div class='flex items-center justify-between pb-3 border-b border-stone-800'>
+        <div class='flex items-center gap-2'>
+          <div class='size-6 rounded-md bg-white flex items-center justify-center p-0.5 shadow-xs'>
+            <svg viewBox="0 0 24 24" class="size-4" fill="none">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" fill="#EA4335"/>
+              <circle cx="12" cy="12" r="3" fill="#FBBC04"/>
+            </svg>
+          </div>
+          <div>
+            <div class='flex items-center gap-1.5'>
+              <span class='text-[12px] font-bold text-stone-200'>Google AdMob</span>
+              <span id='admob-type-badge' class='text-[8.5px] font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30'>Rewarded Ad</span>
+            </div>
+            <div id='admob-unit-display' class='text-[8.5px] text-stone-400 font-mono'>ca-app-pub-4555089982379701/4026079645</div>
+          </div>
+        </div>
+        <div id='admob-timer-badge' class='flex items-center gap-1 px-2 py-0.5 rounded-full bg-stone-800 text-[10.5px] font-bold text-amber-300 border border-stone-700'>
+          <span id='admob-timer-num'>5</span>s
+        </div>
+      </div>
+
+      <!-- Ad Content Video Canvas / Simulation -->
+      <div class='relative aspect-video w-full my-3 rounded-xl bg-gradient-to-br from-stone-900 via-stone-800 to-stone-950 border border-stone-800 flex flex-col items-center justify-center overflow-hidden p-4 text-center'>
+        <div class='size-12 rounded-2xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-2xl mb-2 animate-bounce'>
+          <span id='admob-ad-icon'>⚔️</span>
+        </div>
+        <h4 id='admob-ad-title' class='text-[14px] font-bold text-stone-100'>Stickman War · Arcade Battle</h4>
+        <p id='admob-ad-desc' class='text-[10.5px] text-stone-400 mt-1 max-w-[220px]'>Khám phá 20 trò chơi người que hành động đỉnh cao offline!</p>
+
+        <!-- Progress bar -->
+        <div class='absolute bottom-0 left-0 right-0 h-1.5 bg-stone-800 overflow-hidden'>
+          <div id='admob-progress-bar' class='h-full bg-amber-400 w-0 transition-all duration-100 ease-linear'></div>
+        </div>
+      </div>
+
+      <!-- Footer & Action -->
+      <div class='flex items-center justify-between pt-1'>
+        <div class='text-[9.5px] text-stone-400'>
+          <span id='admob-reward-notice'>Xem hết để nhận Hồi Sinh</span>
+        </div>
+        <button id='admob-skip-btn' type='button' disabled class='px-3 py-1 rounded-lg bg-stone-800 text-stone-500 font-bold text-[11px] border border-stone-700 cursor-not-allowed transition-all'>
+          Nhận thưởng sau 5s
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script is:inline>
     {
       const modal = document.getElementById('game-modal');
@@ -1487,6 +1542,290 @@ const jsonLd = {
       let currentSlugActive = null;
       let scoreSyncInterval = null;
 
+      // ==========================================
+      // 8. SMART ADMOB REVENUE OPTIMIZATION SYSTEM
+      // ==========================================
+      const ADMOB_CONFIG = {
+        appId: 'ca-app-pub-4555089982379701~3151981677',
+        rewardedId: 'ca-app-pub-4555089982379701/4026079645',
+        interstitialId: 'ca-app-pub-4555089982379701/5693871183',
+        // Zero Annoyance & Maximum Retention Cadence
+        interstitialMinRounds: 3,         // Chỉ hiện sau mỗi 3 ván chơi
+        interstitialMinIntervalMs: 60000  // Tối thiểu cách nhau 60s
+      };
+
+      const SmartAdManager = {
+        roundsSinceLastAd: 0,
+        lastAdTimestamp: Date.now(),
+        watchedRewardedInCurrentRound: false,
+        reviveUsedInCurrentRound: false,
+
+        isAdFree: function (slug) {
+          const vip = getVIPTrialData();
+          // Rule 1: 7-day silent trial active -> 100% ad free
+          if (vip.isActive) return true;
+          // Rule 2: Purchased All-Access Pass ($9.99) -> 100% ad free
+          if (vip.isAllUnlocked) return true;
+          // Rule 3: Purchased individual game Remove Ads ($4.99) -> 100% ad free
+          if (slug && vip.unlockedGames && vip.unlockedGames[slug] === true) return true;
+          return false;
+        },
+
+        shouldShowInterstitial: function (slug) {
+          if (this.isAdFree(slug)) return false;
+          // If player just watched a rewarded ad, NEVER double-ad them
+          if (this.watchedRewardedInCurrentRound) return false;
+          // Must have completed at least 3 rounds
+          if (this.roundsSinceLastAd < ADMOB_CONFIG.interstitialMinRounds) return false;
+          // Must have passed at least 60 seconds
+          if (Date.now() - this.lastAdTimestamp < ADMOB_CONFIG.interstitialMinIntervalMs) return false;
+          return true;
+        },
+
+        onGameOpened: function (slug) {
+          this.watchedRewardedInCurrentRound = false;
+          this.reviveUsedInCurrentRound = false;
+        },
+
+        showRewardedAd: function (options) {
+          const { title, onReward } = options || {};
+          const modal = document.getElementById('admob-player-modal');
+          const typeBadge = document.getElementById('admob-type-badge');
+          const unitDisplay = document.getElementById('admob-unit-display');
+          const timerNum = document.getElementById('admob-timer-num');
+          const progressBar = document.getElementById('admob-progress-bar');
+          const skipBtn = document.getElementById('admob-skip-btn');
+          const rewardNotice = document.getElementById('admob-reward-notice');
+          const adTitle = document.getElementById('admob-ad-title');
+
+          if (!modal) {
+            if (onReward) onReward();
+            return;
+          }
+
+          if (typeBadge) typeBadge.textContent = 'Quảng Cáo Có Thưởng (Rewarded)';
+          if (unitDisplay) unitDisplay.textContent = ADMOB_CONFIG.rewardedId;
+          if (rewardNotice) rewardNotice.textContent = title || 'Xem hết video để nhận phần thưởng';
+          if (adTitle) adTitle.textContent = 'Stickman War · Thưởng Chiến Thần';
+
+          modal.style.display = 'flex';
+          modal.classList.remove('hidden');
+
+          let timeLeft = 5;
+          if (timerNum) timerNum.textContent = timeLeft.toString();
+          if (progressBar) progressBar.style.width = '0%';
+          if (skipBtn) {
+            skipBtn.disabled = true;
+            skipBtn.textContent = 'Nhận thưởng sau 5s';
+            skipBtn.className = 'px-3 py-1 rounded-lg bg-stone-800 text-stone-500 font-bold text-[11px] border border-stone-700 cursor-not-allowed';
+          }
+
+          const interval = setInterval(() => {
+            timeLeft -= 1;
+            if (timerNum) timerNum.textContent = Math.max(0, timeLeft).toString();
+            if (progressBar) progressBar.style.width = `${Math.min(100, Math.round(((5 - timeLeft) / 5) * 100))}%`;
+
+            if (timeLeft <= 0) {
+              clearInterval(interval);
+              if (skipBtn) {
+                skipBtn.disabled = false;
+                skipBtn.textContent = 'Nhận Thưởng ✓';
+                skipBtn.className = 'px-3 py-1 rounded-lg bg-amber-400 text-stone-950 font-bold text-[11px] border border-amber-300 shadow-xs cursor-pointer active:scale-95 animate-pulse';
+              }
+            }
+          }, 1000);
+
+          skipBtn.onclick = () => {
+            clearInterval(interval);
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            SmartAdManager.watchedRewardedInCurrentRound = true;
+            SmartAdManager.lastAdTimestamp = Date.now();
+            if (onReward) onReward();
+          };
+        },
+
+        showInterstitialAd: function (onComplete) {
+          const modal = document.getElementById('admob-player-modal');
+          const typeBadge = document.getElementById('admob-type-badge');
+          const unitDisplay = document.getElementById('admob-unit-display');
+          const timerNum = document.getElementById('admob-timer-num');
+          const progressBar = document.getElementById('admob-progress-bar');
+          const skipBtn = document.getElementById('admob-skip-btn');
+          const rewardNotice = document.getElementById('admob-reward-notice');
+          const adTitle = document.getElementById('admob-ad-title');
+
+          if (!modal) {
+            if (onComplete) onComplete();
+            return;
+          }
+
+          if (typeBadge) typeBadge.textContent = 'Quảng Cáo Xen Kẽ (Interstitial)';
+          if (unitDisplay) unitDisplay.textContent = ADMOB_CONFIG.interstitialId;
+          if (rewardNotice) rewardNotice.textContent = 'Đang tải ván đấu tiếp theo...';
+          if (adTitle) adTitle.textContent = 'Stickman War · Arcade Battle';
+
+          modal.style.display = 'flex';
+          modal.classList.remove('hidden');
+
+          let timeLeft = 3;
+          if (timerNum) timerNum.textContent = timeLeft.toString();
+          if (progressBar) progressBar.style.width = '0%';
+          if (skipBtn) {
+            skipBtn.disabled = true;
+            skipBtn.textContent = 'Đóng sau 3s';
+            skipBtn.className = 'px-3 py-1 rounded-lg bg-stone-800 text-stone-500 font-bold text-[11px] border border-stone-700 cursor-not-allowed';
+          }
+
+          const interval = setInterval(() => {
+            timeLeft -= 1;
+            if (timerNum) timerNum.textContent = Math.max(0, timeLeft).toString();
+            if (progressBar) progressBar.style.width = `${Math.min(100, Math.round(((3 - timeLeft) / 3) * 100))}%`;
+
+            if (timeLeft <= 0) {
+              clearInterval(interval);
+              if (skipBtn) {
+                skipBtn.disabled = false;
+                skipBtn.textContent = 'Tiếp Tục ✕';
+                skipBtn.className = 'px-3 py-1 rounded-lg bg-stone-200 text-stone-900 font-bold text-[11px] border border-white cursor-pointer active:scale-95';
+              }
+            }
+          }, 1000);
+
+          skipBtn.onclick = () => {
+            clearInterval(interval);
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            SmartAdManager.roundsSinceLastAd = 0;
+            SmartAdManager.lastAdTimestamp = Date.now();
+            if (onComplete) onComplete();
+          };
+        },
+
+        attachToGameIframe: function (slug, doc, win) {
+          this.reviveUsedInCurrentRound = false;
+          this.watchedRewardedInCurrentRound = false;
+
+          const checkAndInject = () => {
+            try {
+              const endCard = doc.getElementById('endCard') || doc.querySelector('.card:not(#startCard)');
+              if (!endCard) return;
+
+              // If already injected, skip
+              if (endCard.querySelector('.smart-admob-revive-box')) return;
+
+              const actions = endCard.querySelector('.actions') || endCard;
+              const againBtn = endCard.querySelector('#againBtn') || actions.querySelector('button.primary') || actions.querySelector('button');
+              if (!againBtn) return;
+
+              this.roundsSinceLastAd += 1;
+
+              // Hook into againBtn for Smart Interstitial
+              const origClick = againBtn.onclick;
+              againBtn.onclick = (e) => {
+                if (SmartAdManager.shouldShowInterstitial(slug)) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  SmartAdManager.showInterstitialAd(() => {
+                    SmartAdManager.roundsSinceLastAd = 0;
+                    SmartAdManager.watchedRewardedInCurrentRound = false;
+                    SmartAdManager.reviveUsedInCurrentRound = false;
+                    if (origClick) origClick.call(againBtn, e);
+                    else againBtn.click();
+                  });
+                  return;
+                }
+                SmartAdManager.watchedRewardedInCurrentRound = false;
+                SmartAdManager.reviveUsedInCurrentRound = false;
+                if (origClick) origClick.call(againBtn, e);
+              };
+
+              // Inject Smart Revive Button (Only if not already revived in this match)
+              if (!SmartAdManager.reviveUsedInCurrentRound) {
+                const isFree = SmartAdManager.isAdFree(slug);
+                const reviveContainer = doc.createElement('div');
+                reviveContainer.className = 'smart-admob-revive-box';
+                reviveContainer.style.cssText = 'margin-bottom: 10px; width: 100%; display: flex; flex-direction: column; gap: 6px;';
+
+                reviveContainer.innerHTML = `
+                  <button type="button" class="smart-revive-action-btn" style="width: 100%; padding: 8px 12px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #1f2329; font-weight: 800; font-size: 12px; border: 2px solid #1f2329; box-shadow: 2px 2.5px 0px #1f2329; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit;">
+                    <span>${isFree ? '👑' : '🎬'}</span>
+                    <span>${isFree ? 'Hồi Sinh Kỷ Lục (VIP Free)' : 'Xem Video Hồi Sinh Kỷ Lục'}</span>
+                  </button>
+                  <button type="button" class="smart-2x-points-btn" style="width: 100%; padding: 6px 10px; border-radius: 10px; background: #fef3c7; color: #92400e; font-weight: 800; font-size: 11px; border: 1.5px solid #d97706; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; font-family: inherit;">
+                    <span>⚡</span>
+                    <span>${isFree ? 'Nhận Thưởng Rank (+30 WP)' : 'Xem Video Nhận x2 War Points (+30 WP)'}</span>
+                  </button>
+                `;
+
+                actions.parentNode.insertBefore(reviveContainer, actions);
+
+                const reviveBtn = reviveContainer.querySelector('.smart-revive-action-btn');
+                const boostBtn = reviveContainer.querySelector('.smart-2x-points-btn');
+
+                reviveBtn.onclick = (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  const performRevive = () => {
+                    SmartAdManager.reviveUsedInCurrentRound = true;
+                    showVIPToast('🎉 Đã hồi sinh! Tiếp tục chuỗi kỷ lục!');
+                    reviveContainer.remove();
+                    againBtn.click();
+                  };
+
+                  if (isFree) {
+                    performRevive();
+                  } else {
+                    SmartAdManager.showRewardedAd({
+                      title: 'Xem hết video để nhận 1 lượt Hồi Sinh',
+                      onReward: performRevive
+                    });
+                  }
+                };
+
+                boostBtn.onclick = (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (boostBtn.getAttribute('data-claimed') === 'true') return;
+
+                  const performBoost = () => {
+                    const currentPoints = getWarPoints();
+                    const newPoints = currentPoints + 30;
+                    localStorage.setItem('stickman_war_points', newPoints.toString());
+                    updateRankUI();
+                    boostBtn.setAttribute('data-claimed', 'true');
+                    boostBtn.innerHTML = '<span>✓ Đã Nhận +30 WP!</span>';
+                    boostBtn.style.background = '#d1fae5';
+                    boostBtn.style.color = '#065f46';
+                    boostBtn.style.borderColor = '#10b981';
+                    showVIPToast('⚡ +30 War Points danh dự! Tăng tốc lên Chiến Thần!', '🏆');
+                  };
+
+                  if (isFree) {
+                    performBoost();
+                  } else {
+                    SmartAdManager.showRewardedAd({
+                      title: 'Xem hết video để nhân đôi điểm War Points (+30 WP)',
+                      onReward: performBoost
+                    });
+                  }
+                };
+              }
+            } catch (err) {
+              console.warn('SmartAdManager inject error', err);
+            }
+          };
+
+          try {
+            const obs = new win.MutationObserver(checkAndInject);
+            obs.observe(doc.body, { attributes: true, subtree: true, attributeFilter: ['class', 'style'] });
+            checkAndInject();
+            setTimeout(checkAndInject, 300);
+          } catch (e) {}
+        }
+      };
+
       function setupIframe() {
         try {
           const win = frame.contentWindow;
@@ -1581,6 +1920,10 @@ const jsonLd = {
             }
             return origClick.apply(this, arguments);
           };
+          // Tích hợp Smart AdMob Manager vào iframe minigame
+          if (currentSlugActive) {
+            SmartAdManager.attachToGameIframe(currentSlugActive, doc, win);
+          }
         } catch (err) {
           console.warn('Iframe setup error', err);
         }
@@ -1589,6 +1932,7 @@ const jsonLd = {
       function openGame(slug) {
         if (!modal || !frame) return;
         currentSlugActive = slug;
+        SmartAdManager.onGameOpened(slug);
         incrementGamePlay(slug);
         frame.src = `/games/${slug}.html`;
         modal.style.display = 'block';
@@ -1599,7 +1943,7 @@ const jsonLd = {
         frame.onload = setupIframe;
       }
 
-      function closeGame() {
+      function actuallyCloseGame() {
         if (scoreSyncInterval) {
           clearInterval(scoreSyncInterval);
           scoreSyncInterval = null;
@@ -1612,6 +1956,16 @@ const jsonLd = {
         document.body.style.overflow = '';
         closeScorecard();
         updateHomepageCardsUI();
+      }
+
+      function closeGame() {
+        if (currentSlugActive && SmartAdManager.shouldShowInterstitial(currentSlugActive)) {
+          SmartAdManager.showInterstitialAd(() => {
+            actuallyCloseGame();
+          });
+          return;
+        }
+        actuallyCloseGame();
       }
 
       // Also listen for popstate or messages
