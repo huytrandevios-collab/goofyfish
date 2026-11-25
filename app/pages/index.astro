@@ -112,9 +112,9 @@ const jsonLd = {
         <div class='flex items-center justify-between'>
           <h2 class='font-display text-[15.5px] font-bold text-stone-900 tracking-tight flex items-center gap-1.5'>
             <span>🎮</span>
-            <span>Chọn Trò Chơi</span>
+            <span id='section-games-title'>Chọn Trò Chơi</span>
           </h2>
-          <span class='text-[11px] font-bold text-amber-950 bg-amber-100/90 border border-amber-900/20 px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#1f2329]'>
+          <span id='section-games-badge' class='text-[11px] font-bold text-amber-950 bg-amber-100/90 border border-amber-900/20 px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#1f2329]'>
             20 Thử Thách
           </span>
         </div>
@@ -128,7 +128,7 @@ const jsonLd = {
             style='border-radius: 9px 11px 9px 10px;'
           >
             <span>🔥</span>
-            <span>Chơi Nhiều Nhất</span>
+            <span id='tab-most-played-text'>Chơi Nhiều Nhất</span>
           </button>
           <button
             id='tab-sort-top-score'
@@ -137,7 +137,7 @@ const jsonLd = {
             style='border-radius: 10px 9px 11px 9px;'
           >
             <span>🏆</span>
-            <span>Điểm Kỷ Lục</span>
+            <span id='tab-top-score-text'>Điểm Kỷ Lục</span>
           </button>
           <button
             id='tab-sort-default'
@@ -146,7 +146,7 @@ const jsonLd = {
             style='border-radius: 9px 11px 10px 9px;'
           >
             <span>⚡</span>
-            <span>Tất Cả Game</span>
+            <span id='tab-all-games-text'>Tất Cả Game</span>
           </button>
         </div>
       </div>
@@ -448,8 +448,8 @@ const jsonLd = {
             </svg>
           </div>
           <div>
-            <h3 class='font-display text-[16px] font-bold text-stone-900 leading-tight'>Cài Đặt Game</h3>
-            <p class='text-[10.5px] font-medium text-stone-500 leading-tight'>Tùy chỉnh hệ thống & âm thanh</p>
+            <h3 id='settings-modal-title' class='font-display text-[16px] font-bold text-stone-900 leading-tight'>Cài Đặt Game</h3>
+            <p id='settings-modal-subtitle' class='text-[10.5px] font-medium text-stone-500 leading-tight'>Tùy chỉnh hệ thống & âm thanh</p>
           </div>
         </div>
         <button id='settings-close-btn' type='button' class='size-7 flex items-center justify-center rounded-full bg-stone-200/80 hover:bg-stone-300 text-stone-700 active:scale-90 font-bold text-sm'>
@@ -464,8 +464,8 @@ const jsonLd = {
           <div class='flex items-center gap-2'>
             <span class='text-base'>🔊</span>
             <div>
-              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Hiệu Ứng Âm Thanh</div>
-              <div class='text-[10px] text-stone-500 leading-tight'>Tiếng đấm, va chạm và âm nhạc</div>
+              <div id='setting-sfx-label' class='text-[12.5px] font-bold text-stone-900 leading-tight'>Hiệu Ứng Âm Thanh</div>
+              <div id='setting-sfx-sublabel' class='text-[10px] text-stone-500 leading-tight'>Tiếng đấm, va chạm và âm nhạc</div>
             </div>
           </div>
           <label class='relative inline-flex items-center cursor-pointer'>
@@ -479,8 +479,8 @@ const jsonLd = {
           <div class='flex items-center gap-2'>
             <span class='text-base'>📳</span>
             <div>
-              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Rung Phản Hồi (Haptic)</div>
-              <div class='text-[10px] text-stone-500 leading-tight'>Rung nhẹ khi ra đòn và ghi điểm</div>
+              <div id='setting-haptic-label' class='text-[12.5px] font-bold text-stone-900 leading-tight'>Rung Phản Hồi (Haptic)</div>
+              <div id='setting-haptic-sublabel' class='text-[10px] text-stone-500 leading-tight'>Rung nhẹ khi ra đòn và ghi điểm</div>
             </div>
           </div>
           <label class='relative inline-flex items-center cursor-pointer'>
@@ -489,12 +489,31 @@ const jsonLd = {
           </label>
         </div>
 
+        <!-- Language Switcher (Ngôn ngữ / Language) -->
+        <div class='flex items-center justify-between p-2.5 rounded-xl bg-white border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 13px 15px 12px 14px / 15px 13px 14px 12px;'>
+          <div class='flex items-center gap-2'>
+            <span class='text-base'>🌐</span>
+            <div>
+              <div id='setting-lang-label' class='text-[12.5px] font-bold text-stone-900 leading-tight'>Ngôn Ngữ (Language)</div>
+              <div id='setting-lang-sublabel' class='text-[10px] text-stone-500 leading-tight'>Tiếng Việt & English</div>
+            </div>
+          </div>
+          <div class='flex items-center gap-1 bg-stone-100 p-0.5 rounded-lg border border-stone-300'>
+            <button id='lang-btn-vi' type='button' class='px-2.5 py-1 rounded-md text-[11px] font-bold transition-all bg-amber-400 text-stone-950 shadow-xs border border-stone-800'>
+              🇻🇳 VI
+            </button>
+            <button id='lang-btn-en' type='button' class='px-2.5 py-1 rounded-md text-[11px] font-bold transition-all text-stone-600 hover:text-stone-900'>
+              🇺🇸 EN
+            </button>
+          </div>
+        </div>
+
         <!-- Player Name & Game Center Profile -->
         <div class='flex items-center justify-between p-2.5 rounded-xl bg-white border-2 border-stone-800 shadow-[2px_2.5px_0px_#1f2329]' style='border-radius: 14px 12px 13px 15px / 12px 14px 15px 13px;'>
           <div class='flex items-center gap-2'>
             <span class='text-base'>👤</span>
             <div>
-              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Tên Người Chơi</div>
+              <div id='setting-player-label' class='text-[12.5px] font-bold text-stone-900 leading-tight'>Tên Người Chơi</div>
               <div id='settings-player-name-display' class='text-[10px] text-amber-900 font-semibold leading-tight'> Huy Lộc Phát </div>
             </div>
           </div>
@@ -508,8 +527,8 @@ const jsonLd = {
           <div class='flex items-center gap-2'>
             <span class='text-lg'>👑</span>
             <div>
-              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Gói Xóa Quảng Cáo</div>
-              <div class='text-[10px] text-stone-500 leading-tight'>Chơi mượt mà không quảng cáo · $4.99</div>
+              <div id='setting-store-label' class='text-[12.5px] font-bold text-stone-900 leading-tight'>Gói Xóa Quảng Cáo</div>
+              <div id='setting-store-sublabel' class='text-[10px] text-stone-500 leading-tight'>Chơi mượt mà không quảng cáo · $4.99</div>
             </div>
           </div>
           <button id='settings-open-store-btn' type='button' class='px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-[11px] border border-stone-800 shadow-xs active:scale-95'>
@@ -522,7 +541,7 @@ const jsonLd = {
           <div class='flex items-center gap-2'>
             <span class='text-base'>🎮</span>
             <div>
-              <div class='text-[12.5px] font-bold text-stone-900 leading-tight'>Apple Game Center</div>
+              <div id='setting-gc-label' class='text-[12.5px] font-bold text-stone-900 leading-tight'>Bảng Xếp Hạng & Danh Hiệu</div>
               <div id='settings-gc-status' class='text-[10px] text-emerald-700 font-semibold leading-tight'>🟢 Đã sẵn sàng đồng bộ</div>
             </div>
           </div>
@@ -534,8 +553,8 @@ const jsonLd = {
         <!-- Reset Data -->
         <div class='flex items-center justify-between p-2.5 rounded-xl bg-white border border-stone-300 shadow-xs'>
           <div>
-            <div class='text-[12px] font-bold text-stone-800 leading-tight'>Khôi Phục Mặc Định</div>
-            <div class='text-[10px] text-stone-500 leading-tight'>Đặt lại điểm số và thông báo</div>
+            <div id='setting-reset-label' class='text-[12px] font-bold text-stone-800 leading-tight'>Khôi Phục Mặc Định</div>
+            <div id='setting-reset-sublabel' class='text-[10px] text-stone-500 leading-tight'>Đặt lại điểm số và thông báo</div>
           </div>
           <button id='settings-reset-data-btn' type='button' class='px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-rose-50 text-rose-700 font-bold text-[11px] border border-stone-300 active:scale-95'>
             Đặt lại
@@ -2100,41 +2119,44 @@ const jsonLd = {
 
       function updateRankUI() {
         const points = getWarPoints();
+        const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'vi';
+        const isEn = lang === 'en';
+
         let badge = '🥉';
-        let title = 'Tân Binh Đồng';
-        let currTier = 'Đồng (0 WP)';
-        let nextTier = 'Mục tiêu: Bạc (100 WP)';
+        let title = isEn ? 'Bronze Recruit' : 'Tân Binh Đồng';
+        let currTier = isEn ? 'Bronze (0 WP)' : 'Đồng (0 WP)';
+        let nextTier = isEn ? 'Next: Silver (100 WP)' : 'Mục tiêu: Bạc (100 WP)';
         let progress = 0;
 
         if (points < 100) {
           badge = '🥉';
-          title = 'Tân Binh Đồng';
-          currTier = 'Đồng (0 WP)';
-          nextTier = 'Mục tiêu: Bạc (100 WP)';
+          title = isEn ? 'Bronze Recruit' : 'Tân Binh Đồng';
+          currTier = isEn ? 'Bronze (0 WP)' : 'Đồng (0 WP)';
+          nextTier = isEn ? 'Next: Silver (100 WP)' : 'Mục tiêu: Bạc (100 WP)';
           progress = Math.min(100, Math.round((points / 100) * 100));
         } else if (points < 250) {
           badge = '🥈';
-          title = 'Chiến Binh Bạc';
-          currTier = 'Bạc (100 WP)';
-          nextTier = 'Mục tiêu: Vàng (250 WP)';
+          title = isEn ? 'Silver Warrior' : 'Chiến Binh Bạc';
+          currTier = isEn ? 'Silver (100 WP)' : 'Bạc (100 WP)';
+          nextTier = isEn ? 'Next: Gold (250 WP)' : 'Mục tiêu: Vàng (250 WP)';
           progress = Math.min(100, Math.round(((points - 100) / 150) * 100));
         } else if (points < 500) {
           badge = '🥇';
-          title = 'Đấu Sĩ Vàng';
-          currTier = 'Vàng (250 WP)';
-          nextTier = 'Mục tiêu: Kim Cương (500 WP)';
+          title = isEn ? 'Gold Fighter' : 'Đấu Sĩ Vàng';
+          currTier = isEn ? 'Gold (250 WP)' : 'Vàng (250 WP)';
+          nextTier = isEn ? 'Next: Diamond (500 WP)' : 'Mục tiêu: Kim Cương (500 WP)';
           progress = Math.min(100, Math.round(((points - 250) / 250) * 100));
         } else if (points < 1000) {
           badge = '💎';
-          title = 'Bậc Thầy Kim Cương';
-          currTier = 'Kim Cương (500 WP)';
-          nextTier = 'Mục tiêu: Chiến Thần (1000 WP)';
+          title = isEn ? 'Diamond Master' : 'Bậc Thầy Kim Cương';
+          currTier = isEn ? 'Diamond (500 WP)' : 'Kim Cương (500 WP)';
+          nextTier = isEn ? 'Next: War God (1000 WP)' : 'Mục tiêu: Chiến Thần (1000 WP)';
           progress = Math.min(100, Math.round(((points - 500) / 500) * 100));
         } else {
           badge = '👑';
-          title = 'Chiến Thần Stickman';
-          currTier = 'Chiến Thần (>1000 WP)';
-          nextTier = 'Cấp Bậc Tối Cao 🏆';
+          title = isEn ? 'Stickman War God' : 'Chiến Thần Stickman';
+          currTier = isEn ? 'War God (>1000 WP)' : 'Chiến Thần (>1000 WP)';
+          nextTier = isEn ? 'Supreme Rank 🏆' : 'Cấp Bậc Tối Cao 🏆';
           progress = 100;
         }
 
@@ -2144,6 +2166,11 @@ const jsonLd = {
         if (rankCurrTierLabel) rankCurrTierLabel.textContent = currTier;
         if (rankNextTierLabel) rankNextTierLabel.textContent = nextTier;
         if (rankProgressBar) rankProgressBar.style.width = `${progress}%`;
+
+        const topBarTier = document.getElementById('top-bar-player-tier');
+        if (topBarTier) {
+          topBarTier.textContent = `${badge} ${isEn ? (points < 100 ? 'Bronze' : points < 250 ? 'Silver' : points < 500 ? 'Gold' : points < 1000 ? 'Diamond' : 'War God') : (points < 100 ? 'Đồng' : points < 250 ? 'Bạc' : points < 500 ? 'Vàng' : points < 1000 ? 'Kim Cương' : 'Chiến Thần')}`;
+        }
       }
 
       // 3. Apple Game Center Bridge & Player Identity
@@ -2632,6 +2659,171 @@ const jsonLd = {
       }
 
       checkForceUpdate();
+
+      // ==========================================
+      // 10. BILINGUAL I18N SYSTEM (VI & EN)
+      // ==========================================
+      const I18N = {
+        vi: {
+          hero_top_pick: 'Đại Chiến',
+          hero_quick_play: 'Game Bất Ngờ',
+          section_games: 'Chọn Trò Chơi',
+          section_badge: '20 Thử Thách',
+          tab_most_played: 'Chơi Nhiều Nhất',
+          tab_top_score: 'Điểm Kỷ Lục',
+          tab_all_games: 'Tất Cả Game',
+          settings_title: 'Cài Đặt Game',
+          settings_subtitle: 'Tùy chỉnh hệ thống & âm thanh',
+          sfx_label: 'Hiệu Ứng Âm Thanh',
+          sfx_desc: 'Tiếng đấm, va chạm và âm nhạc',
+          haptic_label: 'Rung Phản Hồi (Haptic)',
+          haptic_desc: 'Rung nhẹ khi ra đòn và ghi điểm',
+          lang_label: 'Ngôn Ngữ (Language)',
+          lang_desc: 'Tiếng Việt & English',
+          player_label: 'Tên Người Chơi',
+          btn_edit_name: 'Đổi Tên',
+          store_label: 'Gói Xóa Quảng Cáo',
+          store_desc: 'Chơi mượt mà không quảng cáo · $4.99',
+          btn_store: 'Cửa Hàng',
+          gc_label: 'Bảng Xếp Hạng & Danh Hiệu',
+          reset_label: 'Khôi Phục Mặc Định',
+          reset_desc: 'Đặt lại điểm số và thông báo',
+          btn_reset: 'Đặt lại',
+          btn_unlock_all: 'Mở Khóa Toàn Bộ ($9.99)',
+          store_restore_text: 'Khôi Phục Giao Dịch (Restore Purchases)',
+          force_update_title: 'Bắt Buộc Cập Nhật',
+          force_update_desc: 'Đã có phiên bản mới nhất của Stickman War với tính năng mới, đấu trường mượt mà và phần thưởng hấp dẫn hơn!',
+          force_update_btn: '⚡ CẬP NHẬT NGAY BÂY GIỜ'
+        },
+        en: {
+          hero_top_pick: 'Battle Arena',
+          hero_quick_play: 'Random Game',
+          section_games: 'Select Minigame',
+          section_badge: '20 Challenges',
+          tab_most_played: 'Most Played',
+          tab_top_score: 'High Scores',
+          tab_all_games: 'All Games',
+          settings_title: 'Game Settings',
+          settings_subtitle: 'System & audio preferences',
+          sfx_label: 'Sound Effects (SFX)',
+          sfx_desc: 'Action hits, punches and music',
+          haptic_label: 'Haptic Feedback',
+          haptic_desc: 'Vibration on attacks and scores',
+          lang_label: 'Language (Ngôn Ngữ)',
+          lang_desc: 'English & Tiếng Việt',
+          player_label: 'Player Profile',
+          btn_edit_name: 'Edit',
+          store_label: 'Remove Ads Pass',
+          store_desc: 'Play ad-free forever · $4.99',
+          btn_store: 'Store',
+          gc_label: 'Leaderboard & Achievements',
+          reset_label: 'Reset Defaults',
+          reset_desc: 'Reset all scores and settings',
+          btn_reset: 'Reset',
+          btn_unlock_all: 'Unlock All Games ($9.99)',
+          store_restore_text: 'Restore Purchases',
+          force_update_title: 'Update Required',
+          force_update_desc: 'A new version of Stickman War is available with new features, smoother arena battles, and bigger rewards!',
+          force_update_btn: '⚡ UPDATE NOW'
+        }
+      };
+
+      function getCurrentLanguage() {
+        const saved = localStorage.getItem('stickman_lang');
+        if (saved === 'en' || saved === 'vi') return saved;
+        return (navigator.language || '').toLowerCase().startsWith('vi') ? 'vi' : 'en';
+      }
+
+      function setLanguage(lang) {
+        if (lang !== 'en' && lang !== 'vi') lang = 'vi';
+        localStorage.setItem('stickman_lang', lang);
+        applyLanguage(lang);
+      }
+
+      function applyLanguage(lang) {
+        const dict = I18N[lang] || I18N.vi;
+
+        const viBtn = document.getElementById('lang-btn-vi');
+        const enBtn = document.getElementById('lang-btn-en');
+        if (viBtn && enBtn) {
+          if (lang === 'vi') {
+            viBtn.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold transition-all bg-amber-400 text-stone-950 shadow-xs border border-stone-800';
+            enBtn.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold transition-all text-stone-600 hover:text-stone-900';
+          } else {
+            enBtn.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold transition-all bg-amber-400 text-stone-950 shadow-xs border border-stone-800';
+            viBtn.className = 'px-2.5 py-1 rounded-md text-[11px] font-bold transition-all text-stone-600 hover:text-stone-900';
+          }
+        }
+
+        const heroTopPick = document.getElementById('hero-btn-top-pick-text');
+        if (heroTopPick) heroTopPick.textContent = dict.hero_top_pick;
+        const heroQuickPlay = document.getElementById('hero-btn-quick-play-text');
+        if (heroQuickPlay) heroQuickPlay.textContent = dict.hero_quick_play;
+
+        const secTitle = document.getElementById('section-games-title');
+        if (secTitle) secTitle.textContent = dict.section_games;
+        const secBadge = document.getElementById('section-games-badge');
+        if (secBadge) secBadge.textContent = dict.section_badge;
+        const tabMost = document.getElementById('tab-most-played-text');
+        if (tabMost) tabMost.textContent = dict.tab_most_played;
+        const tabTop = document.getElementById('tab-top-score-text');
+        if (tabTop) tabTop.textContent = dict.tab_top_score;
+        const tabAll = document.getElementById('tab-all-games-text');
+        if (tabAll) tabAll.textContent = dict.tab_all_games;
+
+        const setModalTitle = document.getElementById('settings-modal-title');
+        if (setModalTitle) setModalTitle.textContent = dict.settings_title;
+        const setModalSubtitle = document.getElementById('settings-modal-subtitle');
+        if (setModalSubtitle) setModalSubtitle.textContent = dict.settings_subtitle;
+        const sfxLabel = document.getElementById('setting-sfx-label');
+        if (sfxLabel) sfxLabel.textContent = dict.sfx_label;
+        const sfxSub = document.getElementById('setting-sfx-sublabel');
+        if (sfxSub) sfxSub.textContent = dict.sfx_desc;
+        const hapLabel = document.getElementById('setting-haptic-label');
+        if (hapLabel) hapLabel.textContent = dict.haptic_label;
+        const hapSub = document.getElementById('setting-haptic-sublabel');
+        if (hapSub) hapSub.textContent = dict.haptic_desc;
+        const langLabel = document.getElementById('setting-lang-label');
+        if (langLabel) langLabel.textContent = dict.lang_label;
+        const langSub = document.getElementById('setting-lang-sublabel');
+        if (langSub) langSub.textContent = dict.lang_desc;
+        const playerLabel = document.getElementById('setting-player-label');
+        if (playerLabel) playerLabel.textContent = dict.player_label;
+        const btnEdit = document.getElementById('settings-edit-name-btn');
+        if (btnEdit) btnEdit.textContent = dict.btn_edit_name;
+        const storeLabel = document.getElementById('setting-store-label');
+        if (storeLabel) storeLabel.textContent = dict.store_label;
+        const storeSub = document.getElementById('setting-store-sublabel');
+        if (storeSub) storeSub.textContent = dict.store_desc;
+        const btnStore = document.getElementById('settings-open-store-btn');
+        if (btnStore) btnStore.textContent = dict.btn_store;
+        const gcLabel = document.getElementById('setting-gc-label');
+        if (gcLabel) gcLabel.textContent = dict.gc_label;
+        const resetLabel = document.getElementById('setting-reset-label');
+        if (resetLabel) resetLabel.textContent = dict.reset_label;
+        const resetSub = document.getElementById('setting-reset-sublabel');
+        if (resetSub) resetSub.textContent = dict.reset_desc;
+        const btnReset = document.getElementById('settings-reset-data-btn');
+        if (btnReset) btnReset.textContent = dict.btn_reset;
+
+        const btnUnlockAll = document.getElementById('buy-all-access-btn');
+        if (btnUnlockAll) btnUnlockAll.textContent = dict.btn_unlock_all;
+
+        const fuTitle = document.querySelector('#force-update-modal h3');
+        if (fuTitle) fuTitle.textContent = dict.force_update_title;
+        const fuDesc = document.querySelector('#force-update-modal p');
+        if (fuDesc) fuDesc.textContent = dict.force_update_desc;
+        const fuBtn = document.querySelector('#force-update-btn span');
+        if (fuBtn) fuBtn.textContent = dict.force_update_btn;
+
+        updateRankUI();
+      }
+
+      document.getElementById('lang-btn-vi')?.addEventListener('click', () => setLanguage('vi'));
+      document.getElementById('lang-btn-en')?.addEventListener('click', () => setLanguage('en'));
+
+      // Apply initial language
+      applyLanguage(getCurrentLanguage());
     }
   </script>
 </Base>

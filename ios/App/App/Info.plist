@@ -68,6 +68,13 @@
 	<true/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-4555089982379701~3151981677</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>vi</string>
+		<string>en</string>
+	</array>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
