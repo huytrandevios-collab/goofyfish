@@ -862,8 +862,8 @@ const jsonLd = {
             </svg>
             <span>Khôi Phục Giao Dịch (Restore Purchases)</span>
           </button>
-          <p class='text-[9.5px] text-stone-400 leading-tight'>
-            Thanh toán an toàn qua tài khoản Apple ID của bạn. Gói mua vĩnh viễn dùng trên mọi thiết bị iOS.
+          <p id='vip-platform-notice' class='text-[9.5px] text-stone-400 leading-tight'>
+            Thanh toán an toàn và bảo mật. Gói mua vĩnh viễn dùng trên mọi thiết bị của bạn.
           </p>
         </div>
       </div>
@@ -1545,13 +1545,33 @@ const jsonLd = {
       // ==========================================
       // 8. SMART ADMOB REVENUE OPTIMIZATION SYSTEM
       // ==========================================
+      const isAndroidPlatform = () => {
+        try {
+          if (window.Capacitor && typeof window.Capacitor.getPlatform === 'function') {
+            return window.Capacitor.getPlatform() === 'android';
+          }
+        } catch (e) {}
+        return /android/i.test(navigator.userAgent);
+      };
+
       const ADMOB_CONFIG = {
-        appId: 'ca-app-pub-4555089982379701~3151981677',
-        rewardedId: 'ca-app-pub-4555089982379701/4026079645',
-        interstitialId: 'ca-app-pub-4555089982379701/5693871183',
+        ios: {
+          appId: 'ca-app-pub-4555089982379701~3151981677',
+          rewardedId: 'ca-app-pub-4555089982379701/4026079645',
+          interstitialId: 'ca-app-pub-4555089982379701/5693871183'
+        },
+        android: {
+          appId: 'ca-app-pub-4555089982379701~3543184717',
+          rewardedId: 'ca-app-pub-4555089982379701/3187961495',
+          interstitialId: 'ca-app-pub-4555089982379701/5622553144'
+        },
         // Zero Annoyance & Maximum Retention Cadence
         interstitialMinRounds: 3,         // Chỉ hiện sau mỗi 3 ván chơi
         interstitialMinIntervalMs: 60000  // Tối thiểu cách nhau 60s
+      };
+
+      const getActiveAdMob = () => {
+        return isAndroidPlatform() ? ADMOB_CONFIG.android : ADMOB_CONFIG.ios;
       };
 
       const SmartAdManager = {
@@ -1604,7 +1624,7 @@ const jsonLd = {
           }
 
           if (typeBadge) typeBadge.textContent = 'Quảng Cáo Có Thưởng (Rewarded)';
-          if (unitDisplay) unitDisplay.textContent = ADMOB_CONFIG.rewardedId;
+          if (unitDisplay) unitDisplay.textContent = getActiveAdMob().rewardedId;
           if (rewardNotice) rewardNotice.textContent = title || 'Xem hết video để nhận phần thưởng';
           if (adTitle) adTitle.textContent = 'Stickman War · Thưởng Chiến Thần';
 
@@ -1661,7 +1681,7 @@ const jsonLd = {
           }
 
           if (typeBadge) typeBadge.textContent = 'Quảng Cáo Xen Kẽ (Interstitial)';
-          if (unitDisplay) unitDisplay.textContent = ADMOB_CONFIG.interstitialId;
+          if (unitDisplay) unitDisplay.textContent = getActiveAdMob().interstitialId;
           if (rewardNotice) rewardNotice.textContent = 'Đang tải ván đấu tiếp theo...';
           if (adTitle) adTitle.textContent = 'Stickman War · Arcade Battle';
 
