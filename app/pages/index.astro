@@ -935,6 +935,41 @@ const jsonLd = {
     </div>
   </div>
 
+  <!-- ================= 6. FORCE UPDATE MANDATORY MODAL ================= -->
+  <div
+    id='force-update-modal'
+    class='fixed inset-0 z-[100005] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md select-none'
+    style='display: none; position: fixed; inset: 0; z-index: 100005;'
+  >
+    <div class='relative max-w-sm w-full flex flex-col items-center rounded-2xl bg-white border-3 border-stone-900 shadow-[4px_6px_0px_#1f2329] p-6 text-center animate-in zoom-in-95 duration-200' style='border-radius: 22px 24px 20px 23px;'>
+      <div class='size-16 rounded-2xl bg-amber-400 border-2 border-stone-900 flex items-center justify-center text-3xl mb-3 shadow-[2px_3px_0px_#1f2329] animate-bounce'>
+        🚀
+      </div>
+      <h3 class='text-[18px] font-black text-stone-950 uppercase tracking-tight'>
+        Bắt Buộc Cập Nhật
+      </h3>
+      <p class='text-[12px] text-stone-600 mt-2 leading-relaxed'>
+        Đã có phiên bản mới nhất của <span class='font-bold text-stone-900'>Stickman War</span> với tính năng mới, đấu trường mượt mà và phần thưởng hấp dẫn hơn!
+      </p>
+      <div class='my-3 px-3 py-1.5 rounded-lg bg-stone-100 border border-stone-200 text-[11px] font-mono font-bold text-stone-700 flex items-center gap-2'>
+        <span>v<span id='force-update-curr-ver'>1.0.0</span></span>
+        <span>➔</span>
+        <span class='text-amber-700 font-extrabold'>v<span id='force-update-new-ver'>1.1.0</span></span>
+      </div>
+      <a
+        id='force-update-btn'
+        href='https://play.google.com/store/apps/details?id=com.huytrandev.stickerman'
+        target='_blank'
+        class='w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-[13px] border-2 border-stone-900 shadow-[2.5px_3px_0px_#1f2329] active:translate-x-[1px] active:translate-y-[1px] transition-all flex items-center justify-center gap-2'
+      >
+        <span>⚡ CẬP NHẬT NGAY BÂY GIỜ</span>
+      </a>
+      <p class='text-[9.5px] text-stone-400 mt-2 font-medium'>
+        Vui lòng cập nhật để tiếp tục tham gia đấu trường người que.
+      </p>
+    </div>
+  </div>
+
   <script is:inline>
     {
       const modal = document.getElementById('game-modal');
@@ -2550,6 +2585,53 @@ const jsonLd = {
       if (window.location.hash === '#store') {
         openVIPStoreModal();
       }
+
+      // ==========================================
+      // 9. FORCE UPDATE MANDATORY SYSTEM
+      // ==========================================
+      const APP_VERSION = '1.0.0';
+      const UPDATE_URLS = {
+        android: 'https://play.google.com/store/apps/details?id=com.huytrandev.stickerman',
+        ios: 'https://apps.apple.com/app/id6738981677'
+      };
+
+      function isVersionHigher(targetVer, currVer) {
+        const p1 = (targetVer || '').split('.').map(Number);
+        const p2 = (currVer || '').split('.').map(Number);
+        for (let i = 0; i < Math.max(p1.length, p2.length); i++) {
+          const num1 = p1[i] || 0;
+          const num2 = p2[i] || 0;
+          if (num1 > num2) return true;
+          if (num1 < num2) return false;
+        }
+        return false;
+      }
+
+      function checkForceUpdate() {
+        const forceModal = document.getElementById('force-update-modal');
+        const currVerEl = document.getElementById('force-update-curr-ver');
+        const newVerEl = document.getElementById('force-update-new-ver');
+        const updateBtn = document.getElementById('force-update-btn');
+
+        if (!forceModal) return;
+        if (currVerEl) currVerEl.textContent = APP_VERSION;
+
+        const targetUrl = isAndroidPlatform() ? UPDATE_URLS.android : UPDATE_URLS.ios;
+        if (updateBtn) updateBtn.href = targetUrl;
+
+        // Remote version check: hỗ trợ remote URL hoặc localStorage
+        const remoteMinVersion = localStorage.getItem('stickman_min_required_ver');
+        const remoteLatestVersion = localStorage.getItem('stickman_latest_ver') || '1.1.0';
+
+        if (remoteMinVersion && isVersionHigher(remoteMinVersion, APP_VERSION)) {
+          if (newVerEl) newVerEl.textContent = remoteLatestVersion;
+          forceModal.style.display = 'flex';
+          forceModal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      checkForceUpdate();
     }
   </script>
 </Base>
