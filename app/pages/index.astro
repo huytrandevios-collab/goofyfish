@@ -882,12 +882,24 @@ const jsonLd = {
 
       async function initGameCenter() {
         try {
-          const profile = await GameCenter.getPlayerProfile();
-          if (profile?.alias && rankPlayerAlias) {
-            rankPlayerAlias.textContent = `Game Center: ${profile.alias}`;
+          // Tự động kích hoạt đăng nhập Game Center ngay khi mở app
+          const authRes = await GameCenter.authenticate();
+          if (authRes?.authenticated && authRes?.alias) {
+            if (rankPlayerAlias) rankPlayerAlias.textContent = `Game Center: ${authRes.alias}`;
+            const settingsGcStatus = document.getElementById('settings-gc-status');
+            if (settingsGcStatus) settingsGcStatus.textContent = `🟢 Đã kết nối: ${authRes.alias}`;
+            
+            // Tự động đồng bộ điểm số tích lũy lên Game Center Leaderboard
+            const points = getWarPoints();
+            await GameCenter.submitScore({ score: points, leaderboardID: 'stickman_war_leaderboard' });
+          } else {
+            const profile = await GameCenter.getPlayerProfile();
+            if (profile?.alias && rankPlayerAlias) {
+              rankPlayerAlias.textContent = `Game Center: ${profile.alias}`;
+            }
           }
         } catch (e) {
-          console.log('[GameCenter] Init notice', e);
+          console.log('[GameCenter] Auto-login notice', e);
         }
       }
       initGameCenter();

@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import GameKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -19,7 +20,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             bridgeVC.webView?.scrollView.bouncesZoom = false
         }
 
+        // Tự động đăng nhập Game Center ngay khi mở App
+        setupGameCenterAutoLogin(rootVC: bridgeVC)
+
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)
+    }
+
+    func setupGameCenterAutoLogin(rootVC: UIViewController?) {
+        let player = GKLocalPlayer.local
+        player.authenticateHandler = { [weak rootVC] viewController, error in
+            if let vc = viewController {
+                DispatchQueue.main.async {
+                    rootVC?.present(vc, animated: true, completion: nil)
+                }
+            } else if player.isAuthenticated {
+                print("[GameCenter] Auto-login SUCCESS as: \(player.alias) (ID: \(player.gamePlayerID))")
+                DispatchQueue.main.async {
+                    if #available(iOS 14.0, *) {
+                        GKAccessPoint.shared.location = .topTrailing
+                        GKAccessPoint.shared.showHighlights = true
+                        GKAccessPoint.shared.isActive = true
+                    }
+                }
+            } else if let error = error {
+                print("[GameCenter] Auto-login notice: \(error.localizedDescription)")
+            }
+        }
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
