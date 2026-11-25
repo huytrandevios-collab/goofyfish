@@ -98,7 +98,7 @@ const jsonLd = {
     </nav>
   </header>
 
-  <main class='mx-auto max-w-[1120px] px-4 pt-1 pb-[calc(env(safe-area-inset-bottom,0px)+0.25rem)] sm:px-8 sm:pt-2'>
+  <main class='mx-auto max-w-[1120px] px-4 pt-3 pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)] sm:px-8 sm:pt-4'>
     <section class='grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4'>
       <header
         class='col-span-2 flex flex-col justify-center rounded-2xl border-2 border-stone-800 bg-butter-soft p-3 sm:p-5 shadow-[3.5px_4px_0px_#1f2329]'
@@ -177,7 +177,7 @@ const jsonLd = {
               </div>
               <div class='px-1 pt-2 pb-1'>
                 <h2 class='font-display text-[15.5px] leading-tight sm:text-[17px] text-stone-900 font-bold'>{game.name}</h2>
-                <p class='mt-0.5 text-[11.5px] leading-snug text-neutral-600 line-clamp-2'>{game.tagline}</p>
+                <p class='mt-0.5 text-[11.5px] leading-snug text-neutral-600 line-clamp-2 game-tagline-text'>{game.tagline}</p>
               </div>
             </div>
 
@@ -185,7 +185,7 @@ const jsonLd = {
             <div class='mt-2 pt-1.5 border-t border-stone-800/10 flex items-center justify-between text-[10.5px] text-stone-500 font-semibold'>
               <span class='game-plays-counter flex items-center gap-1'>
                 <span>🕹️</span>
-                <span class='plays-count-num font-bold text-stone-800'>0</span> lượt
+                <span class='plays-count-num font-bold text-stone-800'>0</span> <span class='plays-count-unit'>lượt</span>
               </span>
               <button
                 type='button'
@@ -839,35 +839,30 @@ const jsonLd = {
 
       <!-- Scrollable Body -->
       <div class='mt-2.5 flex-1 overflow-y-auto pr-0.5 flex flex-col gap-2.5'>
-        <!-- Super Value Combo Deal: All-Access 20 Games Pass -->
-        <div class='relative p-3 rounded-2xl bg-stone-900 text-white border-2 border-amber-400 shadow-[3px_3.5px_0px_#1f2329]' style='border-radius: 15px 17px 14px 16px;'>
-          <span class='absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-gradient-to-r from-rose-500 to-amber-500 text-white text-[9px] font-black uppercase tracking-wider shadow-xs border border-white/40'>
-            🔥 Tiết Kiệm 90%
-          </span>
-          <div class='flex items-center gap-2'>
-            <span class='text-2xl'>👑</span>
-            <div class='flex-1'>
-              <div class='text-[13px] font-black text-amber-300 leading-tight'>Gói All-Access VIP Pass</div>
-              <div class='text-[10px] text-stone-300 leading-tight'>Xóa QC trọn đời toàn bộ 20 minigame</div>
+        <!-- In-App Purchase: $4.99 Per Minigame -->
+        <div class='p-3 rounded-2xl bg-gradient-to-br from-amber-50 via-white to-amber-100/70 border-2 border-stone-800 shadow-[3px_3.5px_0px_#1f2329]' style='border-radius: 16px;'>
+          <div class='flex items-center gap-2.5'>
+            <div class='size-9 rounded-xl bg-amber-400 border border-stone-800 flex items-center justify-center text-xl shadow-xs shrink-0'>
+              ⚔️
             </div>
-            <div class='text-right'>
-              <div class='text-[15px] font-black text-amber-400'>$9.99</div>
-              <div class='text-[9px] text-stone-400 line-through'>$99.80</div>
+            <div class='flex-1 min-w-0'>
+              <div class='text-[13px] font-black text-stone-900 leading-tight'>Xóa Quảng Cáo Từng Trò Chơi</div>
+              <div class='text-[10.5px] text-stone-600 leading-tight mt-0.5'>Giá $4.99 trọn đời cho mỗi minigame bạn chọn</div>
+            </div>
+            <div class='text-right shrink-0'>
+              <span class='inline-block px-2.5 py-1 rounded-lg bg-stone-900 text-amber-300 font-black text-[13px]'>$4.99</span>
             </div>
           </div>
-          <button id='buy-all-access-btn' type='button' class='mt-2.5 w-full py-1.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-stone-950 font-black text-[12px] border-2 border-amber-500 shadow-xs active:scale-[0.98] transition-transform'>
-            Mở Khóa Toàn Bộ ($9.99)
-          </button>
         </div>
 
-        <!-- Per-Game Remove Ads ($4.99 each) -->
-        <div class='flex flex-col gap-1.5'>
+        <!-- Per-Game Remove Ads List -->
+        <div class='flex flex-col gap-1.5 flex-1 min-h-0'>
           <div class='flex items-center justify-between px-1'>
-            <span class='text-[11px] font-bold text-stone-700 uppercase tracking-wider'>🎮 Mua Lẻ Từng Trò Chơi ($4.99 / Game)</span>
-            <span class='text-[9.5px] text-stone-500 font-semibold'>20 Minigame</span>
+            <span class='text-[11px] font-bold text-stone-700 uppercase tracking-wider'>🎮 Danh Sách 20 Minigame ($4.99 / Game)</span>
+            <span class='text-[9.5px] text-stone-500 font-semibold'>Chọn game để mua</span>
           </div>
           
-          <div id='vip-games-list' class='flex flex-col gap-1.5 max-h-[190px] overflow-y-auto pr-1'>
+          <div id='vip-games-list' class='flex flex-col gap-2 max-h-[350px] overflow-y-auto pr-1 pb-1'>
             <!-- Populated dynamically with each game, thumbnail, and $4.99 purchase button -->
           </div>
         </div>
@@ -1217,7 +1212,92 @@ const jsonLd = {
         }
       }
 
+      const GAME_TRANSLATIONS = {
+        punching: {
+          taglineEn: 'Goons from both sides, tap a side to strike',
+          taglineVi: 'Đấm gục kẻ địch từ hai phía, ra đòn chính xác'
+        },
+        rolling: {
+          taglineEn: 'Roll up the universe, outrun the avalanche',
+          taglineVi: 'Cuộn tròn vạn vật, chạy đua trước lở tuyết'
+        },
+        swinging: {
+          taglineEn: 'Hook overhead pegs, swing and fly high',
+          taglineVi: 'Móc dây đu xà, bay lượn vượt chướng ngại vật'
+        },
+        chopping: {
+          taglineEn: 'Duck the branches, keep your axe sharp',
+          taglineVi: 'Né cành cây rơi, chặt nhanh tay mài rìu bén'
+        },
+        stacks: {
+          taglineEn: 'Stack as high as you can, one drop and it is over',
+          taglineVi: 'Xếp thùng càng cao càng tốt, chuẩn từng nhịp thả'
+        },
+        skirmish: {
+          taglineEn: 'Drop an army, build fences, watch the brawl',
+          taglineVi: 'Triệu hồi quân đoàn, xây hàng rào hỗn chiến'
+        },
+        hoops: {
+          taglineEn: 'Ten shots, a swish is worth three',
+          taglineVi: '10 cú ném bóng rổ, vào thẳng rổ nhân 3 điểm'
+        },
+        typing: {
+          taglineEn: "Type the word on a goon's sign to knock it out",
+          taglineVi: 'Gõ từ trên biển kẻ địch để hạ gục đối thủ'
+        },
+        slicing: {
+          taglineEn: 'Slice the picnic before it spoils',
+          taglineVi: 'Chém hoa quả dã ngoại, chém liên hoàn combo'
+        },
+        knockdown: {
+          taglineEn: 'Point, fire, knock it all down',
+          taglineVi: 'Nhắm bắn đạn pháo, bắn sập toàn bộ công trình'
+        },
+        stomping: {
+          taglineEn: 'The floor is spikes, stay up on their heads',
+          taglineVi: 'Sàn gai nhọn nguy hiểm, dẫm lên đầu địch sống sót'
+        },
+        crossing: {
+          taglineEn: 'Hop across, every zone is stranger than the last',
+          taglineVi: 'Nhảy qua đường, vượt các vùng địa hình kỳ thú'
+        },
+        gaps: {
+          taglineEn: 'He never stops running, draw the bridges',
+          taglineVi: 'Người que không dừng lại, vẽ cầu giúp vượt hố sâu'
+        },
+        slowmo: {
+          taglineEn: 'Spin in slow motion, drop feet first',
+          taglineVi: 'Nhào lộn chậm, tiếp đất an toàn bằng hai chân'
+        },
+        planks: {
+          taglineEn: 'Drop the plank, whatever hangs over gets chopped',
+          taglineVi: 'Thả tấm ván gỗ, phần thừa sẽ bị cắt gọt'
+        },
+        bopping: {
+          taglineEn: "Bop the balloon, don't let it touch the floor",
+          taglineVi: 'Tâng bóng bay liên tục, không để chạm mặt đất'
+        },
+        glider: {
+          taglineEn: 'Glide room to room, climb too long and you stall',
+          taglineVi: 'Lượn máy bay giấy qua phòng, giữ độ cao ổn định'
+        },
+        stones: {
+          taglineEn: 'Cross the river, land dead centre for a combo',
+          taglineVi: 'Bước qua đá qua sông, nhảy chính giữa nhận combo'
+        },
+        mirror: {
+          taglineEn: 'Copy the cut-out with your body',
+          taglineVi: 'Uốn người que theo hình cắt, tạo dáng chuẩn xác'
+        },
+        selves: {
+          taglineEn: 'Every attempt replays, work with your past selves',
+          taglineVi: 'Bản sao quá khứ hỗ trợ, phối hợp vượt thử thách'
+        }
+      };
+
       function getGameRankTier(slug, score) {
+        const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'vi';
+        const isEn = lang === 'en';
         const info = ALL_GAMES_INFO.find((g) => g.slug === slug) || { unit: 'pts', thresholds: [15, 35, 65, 100] };
         const t = info.thresholds;
         const unit = info.unit;
@@ -1225,46 +1305,46 @@ const jsonLd = {
         if (score < t[0]) {
           return {
             badge: '🥉',
-            rankTitle: 'Tân Binh Đồng',
-            shortTitle: 'Đồng',
-            currTierLbl: `Đồng (0 ${unit})`,
-            nextTierLbl: `Mục tiêu: Bạc (${t[0]} ${unit})`,
+            rankTitle: isEn ? 'Bronze Recruit' : 'Tân Binh Đồng',
+            shortTitle: isEn ? 'Bronze' : 'Đồng',
+            currTierLbl: isEn ? `Bronze (0 ${unit})` : `Đồng (0 ${unit})`,
+            nextTierLbl: isEn ? `Target: Silver (${t[0]} ${unit})` : `Mục tiêu: Bạc (${t[0]} ${unit})`,
             progress: Math.min(100, Math.round((score / t[0]) * 100))
           };
         } else if (score < t[1]) {
           return {
             badge: '🥈',
-            rankTitle: 'Chiến Binh Bạc',
-            shortTitle: 'Bạc',
-            currTierLbl: `Bạc (${t[0]} ${unit})`,
-            nextTierLbl: `Mục tiêu: Vàng (${t[1]} ${unit})`,
+            rankTitle: isEn ? 'Silver Warrior' : 'Chiến Binh Bạc',
+            shortTitle: isEn ? 'Silver' : 'Bạc',
+            currTierLbl: isEn ? `Silver (${t[0]} ${unit})` : `Bạc (${t[0]} ${unit})`,
+            nextTierLbl: isEn ? `Target: Gold (${t[1]} ${unit})` : `Mục tiêu: Vàng (${t[1]} ${unit})`,
             progress: Math.min(100, Math.round(((score - t[0]) / (t[1] - t[0])) * 100))
           };
         } else if (score < t[2]) {
           return {
             badge: '🥇',
-            rankTitle: 'Đấu Sĩ Vàng',
-            shortTitle: 'Vàng',
-            currTierLbl: `Vàng (${t[1]} ${unit})`,
-            nextTierLbl: `Mục tiêu: Kim Cương (${t[2]} ${unit})`,
+            rankTitle: isEn ? 'Gold Fighter' : 'Đấu Sĩ Vàng',
+            shortTitle: isEn ? 'Gold' : 'Vàng',
+            currTierLbl: isEn ? `Gold (${t[1]} ${unit})` : `Vàng (${t[1]} ${unit})`,
+            nextTierLbl: isEn ? `Target: Diamond (${t[2]} ${unit})` : `Mục tiêu: Kim Cương (${t[2]} ${unit})`,
             progress: Math.min(100, Math.round(((score - t[1]) / (t[2] - t[1])) * 100))
           };
         } else if (score < t[3]) {
           return {
             badge: '💎',
-            rankTitle: 'Bậc Thầy Kim Cương',
-            shortTitle: 'Kim Cương',
-            currTierLbl: `Kim Cương (${t[2]} ${unit})`,
-            nextTierLbl: `Mục tiêu: Chiến Thần (${t[3]} ${unit})`,
+            rankTitle: isEn ? 'Diamond Master' : 'Bậc Thầy Kim Cương',
+            shortTitle: isEn ? 'Diamond' : 'Kim Cương',
+            currTierLbl: isEn ? `Diamond (${t[2]} ${unit})` : `Kim Cương (${t[2]} ${unit})`,
+            nextTierLbl: isEn ? `Target: Champion (${t[3]} ${unit})` : `Mục tiêu: Chiến Thần (${t[3]} ${unit})`,
             progress: Math.min(100, Math.round(((score - t[2]) / (t[3] - t[2])) * 100))
           };
         } else {
           return {
             badge: '👑',
-            rankTitle: 'Chiến Thần Tối Cao',
-            shortTitle: 'Chiến Thần',
-            currTierLbl: `Chiến Thần (>${t[3]} ${unit})`,
-            nextTierLbl: 'Cấp Bậc Tối Thượng 🏆',
+            rankTitle: isEn ? 'Supreme Champion' : 'Chiến Thần Tối Cao',
+            shortTitle: isEn ? 'Champion' : 'Chiến Thần',
+            currTierLbl: isEn ? `Champion (>${t[3]} ${unit})` : `Chiến Thần (>${t[3]} ${unit})`,
+            nextTierLbl: isEn ? 'Ultimate Rank 🏆' : 'Cấp Bậc Tối Thượng 🏆',
             progress: 100
           };
         }
@@ -1280,6 +1360,13 @@ const jsonLd = {
       function updateHomepageCardsUI() {
         const counts = getPlayCounts();
         const scores = getGameScores();
+        const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'vi';
+        const isEn = lang === 'en';
+
+        // Update plays count unit
+        document.querySelectorAll('.plays-count-unit').forEach((el) => {
+          el.textContent = isEn ? 'plays' : 'lượt';
+        });
 
         // Find top 3 played games
         const sortedSlugsByPlay = Object.keys(counts).sort((a, b) => (counts[b] || 0) - (counts[a] || 0));
@@ -1299,11 +1386,17 @@ const jsonLd = {
           const playsNumEl = card.querySelector('.plays-count-num');
           if (playsNumEl) playsNumEl.textContent = formatCount(playCount);
 
+          // Update localized tagline
+          const taglineEl = card.querySelector('.game-tagline-text');
+          if (taglineEl && GAME_TRANSLATIONS[slug]) {
+            taglineEl.textContent = isEn ? GAME_TRANSLATIONS[slug].taglineEn : GAME_TRANSLATIONS[slug].taglineVi;
+          }
+
           // Update rank badge on top-right
           const rankBadgeIcon = card.querySelector('.rank-badge-icon');
           const rankBadgeText = card.querySelector('.rank-badge-text');
           if (rankBadgeIcon) rankBadgeIcon.textContent = tier.badge;
-          if (rankBadgeText) rankBadgeText.textContent = tier.shortTitle || 'Đồng';
+          if (rankBadgeText) rankBadgeText.textContent = tier.shortTitle;
 
           // Update Hot Badge on top-left
           const hotBadge = card.querySelector('.game-hot-badge');
@@ -1636,11 +1729,7 @@ const jsonLd = {
 
         isAdFree: function (slug) {
           const vip = getVIPTrialData();
-          // Rule 1: 7-day silent trial active -> 100% ad free
-          if (vip.isActive) return true;
-          // Rule 2: Purchased All-Access Pass ($9.99) -> 100% ad free
-          if (vip.isAllUnlocked) return true;
-          // Rule 3: Purchased individual game Remove Ads ($4.99) -> 100% ad free
+          // Purchased individual game Remove Ads ($4.99) -> 100% ad free for this game
           if (slug && vip.unlockedGames && vip.unlockedGames[slug] === true) return true;
           return false;
         },
@@ -2194,11 +2283,14 @@ const jsonLd = {
         const settingsStatus = document.getElementById('settings-gc-status');
         const settingsPlayerDisplay = document.getElementById('settings-player-name-display');
 
-        let tierShort = '🥉 Đồng';
-        if (points >= 1000) tierShort = '👑 Thần';
-        else if (points >= 500) tierShort = '💎 KC';
-        else if (points >= 250) tierShort = '🥇 Vàng';
-        else if (points >= 100) tierShort = '🥈 Bạc';
+        const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'vi';
+        const isEn = lang === 'en';
+
+        let tierShort = isEn ? '🥉 Bronze' : '🥉 Đồng';
+        if (points >= 1000) tierShort = isEn ? '👑 Champion' : '👑 Thần';
+        else if (points >= 500) tierShort = isEn ? '💎 Diamond' : '💎 KC';
+        else if (points >= 250) tierShort = isEn ? '🥇 Gold' : '🥇 Vàng';
+        else if (points >= 100) tierShort = isEn ? '🥈 Silver' : '🥈 Bạc';
 
         if (topBarName) topBarName.textContent = alias || ' Huy Lộc Phát ';
         if (topBarTier) topBarTier.textContent = tierShort;
@@ -2503,7 +2595,6 @@ const jsonLd = {
         try {
           unlockedGames = JSON.parse(localStorage.getItem('stickman_unlocked_games') || '{}');
         } catch (e) {}
-        const isAllUnlocked = localStorage.getItem('stickman_all_unlocked') === 'true';
 
         return {
           isActive,
@@ -2513,8 +2604,7 @@ const jsonLd = {
           minutes,
           timeStr: days > 0 ? `${days} ngày ${hours}h` : `${hours}h ${minutes}p`,
           fullTimeStr: `⏳ Còn ${days} ngày ${hours} giờ ${minutes}p`,
-          unlockedGames,
-          isAllUnlocked
+          unlockedGames
         };
       }
 
@@ -2527,7 +2617,7 @@ const jsonLd = {
         const vip = getVIPTrialData();
 
         vipGamesList.innerHTML = ALL_GAMES_INFO.map((game) => {
-          const isUnlocked = vip.isAllUnlocked || vip.unlockedGames[game.slug] === true;
+          const isUnlocked = vip.unlockedGames && vip.unlockedGames[game.slug] === true;
 
           return `
             <div class='flex items-center justify-between p-2 rounded-xl bg-white border border-stone-200 shadow-2xs'>
@@ -2537,13 +2627,13 @@ const jsonLd = {
                 </div>
                 <div>
                   <div class='text-[12px] font-bold text-stone-900 leading-tight'>${game.name}</div>
-                  <div class='text-[9.5px] text-stone-500 leading-tight'>${isUnlocked ? '✓ Đã kích hoạt sạch quảng cáo' : 'Gói Xóa Quảng Cáo ($4.99)'}</div>
+                  <div class='text-[9.5px] text-stone-500 leading-tight'>${isUnlocked ? '✓ Đã xóa quảng cáo' : 'Gói Xóa Quảng Cáo ($4.99)'}</div>
                 </div>
               </div>
               <div>
                 ${
                   isUnlocked
-                    ? `<span class='px-2 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-[10.5px] font-bold border border-emerald-300'>Đã Mua ✓</span>`
+                    ? `<span class='px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-[10.5px] font-bold border border-emerald-300'>Đã Mua ✓</span>`
                     : `<button type='button' class='buy-single-game-btn px-2.5 py-1 rounded-lg bg-stone-900 hover:bg-stone-800 text-amber-300 font-bold text-[11px] border border-stone-800 shadow-xs active:scale-95 transition-transform' data-game-slug='${game.slug}' data-game-name='${game.name}'>
                         Mua $4.99
                       </button>`
@@ -2553,19 +2643,50 @@ const jsonLd = {
           `;
         }).join('');
 
+      const StoreKit = window.Capacitor?.registerPlugin?.('StoreKit') || window.Capacitor?.Plugins?.StoreKit;
+
         // Attach listeners for single game buy buttons
         vipGamesList.querySelectorAll('.buy-single-game-btn').forEach((btn) => {
-          btn.addEventListener('click', () => {
+          btn.addEventListener('click', async () => {
             const slug = btn.getAttribute('data-game-slug');
             const name = btn.getAttribute('data-game-name');
             if (!slug) return;
 
-            const vipData = getVIPTrialData();
-            vipData.unlockedGames[slug] = true;
-            localStorage.setItem('stickman_unlocked_games', JSON.stringify(vipData.unlockedGames));
+            const originalText = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Đang xử lý...';
 
-            showVIPToast(`✓ Đã mở khóa Remove Ads cho ${name}! ($4.99)`);
-            updateVIPStatusUI();
+            try {
+              if (StoreKit && typeof StoreKit.purchaseProduct === 'function') {
+                const res = await StoreKit.purchaseProduct({ productID: 'stickman_remove_ads' });
+                if (res && res.success) {
+                  const vipData = getVIPTrialData();
+                  vipData.unlockedGames[slug] = true;
+                  localStorage.setItem('stickman_unlocked_games', JSON.stringify(vipData.unlockedGames));
+
+                  showVIPToast(`✓ Đã thanh toán Apple ID thành công! (${name})`, '🎉');
+                  updateVIPStatusUI();
+                  return;
+                } else if (res && res.cancelled) {
+                  showVIPToast('Đã hủy giao dịch Apple ID', 'ℹ️');
+                  btn.disabled = false;
+                  btn.textContent = originalText;
+                  return;
+                }
+              }
+
+              // Fallback for local web environment
+              const vipData = getVIPTrialData();
+              vipData.unlockedGames[slug] = true;
+              localStorage.setItem('stickman_unlocked_games', JSON.stringify(vipData.unlockedGames));
+              showVIPToast(`✓ Đã mở khóa Remove Ads cho ${name}! ($4.99)`);
+              updateVIPStatusUI();
+            } catch (err) {
+              console.error('[StoreKit] Purchase error:', err);
+              showVIPToast('Lỗi thanh toán Apple ID: ' + (err.message || 'Thử lại sau'), '⚠️');
+              btn.disabled = false;
+              btn.textContent = originalText;
+            }
           });
         });
       }
@@ -2596,14 +2717,21 @@ const jsonLd = {
         if (e.target === vipStoreModal) closeVIPStoreModal();
       });
 
-      buyAllAccessBtn?.addEventListener('click', () => {
-        localStorage.setItem('stickman_all_unlocked', 'true');
-        showVIPToast('👑 Chúc mừng! Bạn đã sở hữu Gói All-Access VIP ($9.99)!', '👑');
-        updateVIPStatusUI();
-      });
-
-      vipRestoreBtn?.addEventListener('click', () => {
-        showVIPToast('✓ Đã khôi phục các giao dịch từ Apple ID của bạn thành công!', '🔄');
+      vipRestoreBtn?.addEventListener('click', async () => {
+        try {
+          if (StoreKit && typeof StoreKit.restorePurchases === 'function') {
+            const res = await StoreKit.restorePurchases();
+            if (res && res.purchased && res.purchased.length > 0) {
+              showVIPToast('✓ Đã khôi phục các giao dịch Apple ID!', '🔄');
+            } else {
+              showVIPToast('Không tìm thấy giao dịch cũ trên tài khoản Apple ID này', 'ℹ️');
+            }
+          } else {
+            showVIPToast('✓ Đã khôi phục giao dịch từ Apple ID của bạn!', '🔄');
+          }
+        } catch (e) {
+          showVIPToast('Lỗi khôi phục: ' + (e.message || ''), '⚠️');
+        }
         updateVIPStatusUI();
       });
 
@@ -2817,6 +2945,11 @@ const jsonLd = {
         if (fuBtn) fuBtn.textContent = dict.force_update_btn;
 
         updateRankUI();
+        updateHomepageCardsUI();
+        if (typeof renderVIPGamesList === 'function') renderVIPGamesList();
+        if (typeof renderSelectedGameRank === 'function') renderSelectedGameRank(currentSelectedGameSlug || 'punching');
+        const pName = (typeof getPlayerName === 'function') ? getPlayerName() : ' Huy Lộc Phát ';
+        if (typeof updatePlayerUI === 'function') updatePlayerUI(pName, true);
       }
 
       document.getElementById('lang-btn-vi')?.addEventListener('click', () => setLanguage('vi'));

@@ -1,0 +1,58 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : "https://sites.google.com/view/stickman-war-privacy"
+      }
+    ]
+  },
+  "identifier" : "STICKMAN_WAR_IAP",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : true,
+      "internalID" : "6839114644",
+      "localizations" : [
+        {
+          "description" : "Play ad-free forever and remove all game ads.",
+          "displayName" : "Remove Ads",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Xóa sạch toàn bộ quảng cáo trong game vĩnh viễn.",
+          "displayName" : "Xóa Quảng Cáo",
+          "locale" : "vi"
+        }
+      ],
+      "productID" : "stickman_remove_ads",
+      "referenceName" : "Remove Ads",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6839113505",
+    "_developerTeamID" : "YAWZY93Z98",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 0,
+    "_locale" : "vi",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "VNM",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
